@@ -90,7 +90,6 @@ public class Install implements NativeCommandExecutor {
 
                 System.out.println("Starting explorer.exe...");
                 p = Runtime.getRuntime().exec("explorer.exe");
-                p.waitFor();
             }
 
             System.out.println("Installed successfully!");
