@@ -1,4 +1,4 @@
-package ru.leonidm.datapacktool.build_commands;
+package ru.leonidm.datapacktool.build.commands;
 
 import ru.leonidm.datapacktool.Messages;
 import ru.leonidm.datapacktool.entities.BuildCommandExecutor;
@@ -10,15 +10,14 @@ import ru.leonidm.datapacktool.events.LinePreParseEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class BuildSetExecutor extends BuildCommandExecutor implements BuildListener {
+public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
 
     private final static Map<String, String> changeFromTo = new HashMap<>();
 
     @Override
-    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile, List<File> anonymousFiles) throws Exception {
+    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
         execute(args, changeFromTo);
     }
 
@@ -33,7 +32,9 @@ public class BuildSetExecutor extends BuildCommandExecutor implements BuildListe
             return;
         }
 
-        String key = "%" + args[0] + "%";
+        String key;
+        if(args[0].startsWith("%") && args[0].endsWith("%")) key = args[0];
+        else key = "%" + args[0] + "%";
         String value = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
         changeFromTo.put(key, value);

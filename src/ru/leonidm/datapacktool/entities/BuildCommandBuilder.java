@@ -12,6 +12,7 @@ public class BuildCommandBuilder {
     public BuildCommandBuilder() {
         this.set(BuildCommand.Setting.TAKE_ANONYMOUS_FUNCTION_AS_ARG, false);
     }
+
     public BuildCommandBuilder setLabel(String label) {
         this.label = label;
         return this;

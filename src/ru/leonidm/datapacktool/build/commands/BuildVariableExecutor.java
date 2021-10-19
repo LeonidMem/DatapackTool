@@ -1,4 +1,4 @@
-package ru.leonidm.datapacktool.build_commands;
+package ru.leonidm.datapacktool.build.commands;
 
 import ru.leonidm.datapacktool.entities.BuildCommandExecutor;
 
@@ -6,12 +6,12 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class BuildVariableExecutor extends BuildCommandExecutor {
+public class BuildVariableExecutor implements BuildCommandExecutor {
 
     private final List<String> mathSigns = Arrays.asList("=", ">", "<", "><", "/=", "-=", "+=", "*=", "%=");
 
     @Override
-    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile, List<File> anonymousFiles) throws Exception {
+    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
         if(args.length == 3) {
             try {
                 Integer.parseInt(args[2]);

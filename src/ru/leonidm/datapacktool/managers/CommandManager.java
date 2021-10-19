@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class CommandManager {
 
-
     private final static Map<String, BuildCommand> commands = new HashMap<>();
+
     public static void registerCommand(BuildCommand command) {
         commands.put(command.getLabel(), command);
     }

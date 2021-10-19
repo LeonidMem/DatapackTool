@@ -4,16 +4,14 @@ import ru.leonidm.datapacktool.events.FileParsedEvent;
 import ru.leonidm.datapacktool.events.LinePreParseEvent;
 import ru.leonidm.datapacktool.managers.CommandManager;
 import ru.leonidm.datapacktool.managers.EventManager;
+import ru.leonidm.datapacktool.managers.ParameterManager;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class McFunction {
 
-    private final List<File> anonymousFiles;
     private final File inFile, outFile;
     private final StringBuilder out;
     private int lineNumber = 0;
@@ -23,7 +21,6 @@ public class McFunction {
         outFile.getParentFile().mkdirs();
         this.outFile = outFile;
         this.out = new StringBuilder();
-        this.anonymousFiles = new ArrayList<>();
     }
 
     public void parse() throws Exception {
@@ -47,9 +44,15 @@ public class McFunction {
         lineNumber += 1;
         String line = reader.readLine().strip();
 
-        boolean isCommented;
+        boolean isCommand;
 
-        if((isCommented = !line.startsWith("! ")) && !line.startsWith("#! ")) {
+        if(line.startsWith("! ") || line.startsWith("#! ")) {
+            isCommand = true;
+        }
+        else if(line.startsWith("$ ") || line.startsWith("#$ ")) {
+            isCommand = false;
+        }
+        else {
             LinePreParseEvent linePreParseEvent = new LinePreParseEvent(line);
             EventManager.callEvent(linePreParseEvent);
             line = linePreParseEvent.getContent();
@@ -58,15 +61,36 @@ public class McFunction {
             return;
         }
 
-        line = line.substring(isCommented ? 3 : 2).strip();
+        line = line.substring(line.startsWith("#") ? 3 : 2).strip();
+
+        while(line.contains("  ")) {
+            line = line.replace("  ", " ");
+        }
+
         LinePreParseEvent linePreParseEvent = new LinePreParseEvent(line);
         EventManager.callEvent(linePreParseEvent);
         line = linePreParseEvent.getContent();
 
         String[] split = line.split(" ");
+
+        if(!isCommand) {
+            BuildParameter parameter = ParameterManager.getParameter(split[0]);
+
+            if(parameter == null) {
+                throw new Exception("[line:" + lineNumber + "] Unknown parameter!\n> " + line);
+            }
+
+            try {
+                parameter.execute(Arrays.copyOfRange(split, 1, split.length), inFile, outFile);
+            } catch(Exception e) {
+                throw new Exception("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line);
+            }
+
+            return;
+        }
+
         BuildCommand command = CommandManager.getCommand(split[0]);
         if(command == null) {
-            if(split[0].startsWith("%")) return;
             throw new Exception("[line:" + lineNumber + "] Unknown command!\n> " + line);
         }
 
@@ -100,20 +124,12 @@ public class McFunction {
             }
         }
 
-        while(line.contains("  ")) {
-            line = line.replace("  ", " ");
-        }
-
         try {
             command.execute(out, Arrays.copyOfRange(split, 1, split.length),
                     anonymousContent == null ? null : anonymousContent.toString(),
-                    inFile, outFile, anonymousFiles);
+                    inFile, outFile);
         } catch(Exception e) {
             throw new Exception("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line);
         }
-    }
-
-    public List<File> getAnonymousFiles() {
-        return anonymousFiles;
     }
 }

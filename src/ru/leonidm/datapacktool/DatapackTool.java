@@ -1,12 +1,14 @@
 package ru.leonidm.datapacktool;
 
-import ru.leonidm.datapacktool.build_commands.BuildExecuteExecutor;
-import ru.leonidm.datapacktool.build_commands.BuildGlobalSetExecutor;
-import ru.leonidm.datapacktool.build_commands.BuildSetExecutor;
-import ru.leonidm.datapacktool.build_commands.BuildVariableExecutor;
+import ru.leonidm.datapacktool.build.commands.BuildExecuteExecutor;
+import ru.leonidm.datapacktool.build.commands.BuildGlobalSetExecutor;
+import ru.leonidm.datapacktool.build.commands.BuildSetExecutor;
+import ru.leonidm.datapacktool.build.commands.BuildVariableExecutor;
+import ru.leonidm.datapacktool.build.parameters.BuildTagExecutor;
 import ru.leonidm.datapacktool.entities.*;
 import ru.leonidm.datapacktool.managers.CommandManager;
 import ru.leonidm.datapacktool.managers.EventManager;
+import ru.leonidm.datapacktool.managers.ParameterManager;
 
 import java.util.*;
 
@@ -20,6 +22,7 @@ public class DatapackTool {
             return;
         }
 
+        registerBuildParameters();
         registerBuildCommands();
 
         List<String> outArgs = new ArrayList<>();
@@ -59,5 +62,13 @@ public class DatapackTool {
                 .setExecutor(new BuildGlobalSetExecutor())
                 .build());
         EventManager.registerListener(new BuildGlobalSetExecutor());
+    }
+
+    private static void registerBuildParameters() {
+        ParameterManager.registerParameter(new BuildParameterBuilder()
+                .setLabel("tag")
+                .setExecutor(new BuildTagExecutor())
+                .set(BuildParameter.Setting.ARGS_AMOUNT, Collections.singletonList(1))
+                .build());
     }
 }

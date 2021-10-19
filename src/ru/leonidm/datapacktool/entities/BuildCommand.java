@@ -18,7 +18,7 @@ public class BuildCommand {
         this.settings = settings;
     }
 
-    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousArg, File inFile, File outFile, List<File> anonymousFiles) throws Exception {
+    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
         Setting<?> setting = settings.get(Setting.Type.ARGS_AMOUNT);
         if(setting != null) {
             if(!((Setting<List<Integer>>) setting).getValue().contains(args.length)) {
@@ -26,7 +26,7 @@ public class BuildCommand {
             }
         }
 
-        if(anonymousArg != null) {
+        if(anonymousFunctionContent != null) {
             setting = settings.get(Setting.Type.TAKE_ANONYMOUS_FUNCTION_AS_ARG);
 
             if(setting != null && !((Setting<Boolean>) setting).getValue()) {
@@ -43,7 +43,7 @@ public class BuildCommand {
             }
         }
 
-        executor.execute(outFileBuilder, args, anonymousArg, inFile, outFile, anonymousFiles);
+        executor.execute(outFileBuilder, args, anonymousFunctionContent, inFile, outFile);
     }
 
     public String getLabel() {
