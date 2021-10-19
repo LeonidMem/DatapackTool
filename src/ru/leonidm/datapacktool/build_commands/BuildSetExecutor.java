@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
+public class BuildSetExecutor extends BuildCommandExecutor implements BuildListener {
 
     private final static Map<String, String> changeFromTo = new HashMap<>();
 

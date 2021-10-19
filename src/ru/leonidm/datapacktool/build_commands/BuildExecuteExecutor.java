@@ -5,7 +5,7 @@ import ru.leonidm.datapacktool.entities.BuildCommandExecutor;
 import java.io.File;
 import java.util.List;
 
-public class BuildExecuteExecutor implements BuildCommandExecutor {
+public class BuildExecuteExecutor extends BuildCommandExecutor {
 
     @Override
     public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile, List<File> anonymousFiles) throws Exception {

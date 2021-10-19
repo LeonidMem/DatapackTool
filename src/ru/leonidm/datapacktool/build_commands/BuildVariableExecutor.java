@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class BuildVariableExecutor implements BuildCommandExecutor {
+public class BuildVariableExecutor extends BuildCommandExecutor {
 
     private final List<String> mathSigns = Arrays.asList("=", ">", "<", "><", "/=", "-=", "+=", "*=", "%=");
 
