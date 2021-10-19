@@ -195,8 +195,10 @@ public class Utils {
         JSONObject jsonObject = (JSONObject) JSONValue.parse(content);
         JSONArray values = (JSONArray) jsonObject.get("values");
 
-        String outValue = Utils.getFunctionMinecraftFormattedName(outFile);
-        if(values.contains(outValue)) return;
+        if(values.contains(value)) return;
+
+        values.add(value);
+        jsonObject.put("values", values);
 
         tagFile.delete();
         tagFile.createNewFile();
