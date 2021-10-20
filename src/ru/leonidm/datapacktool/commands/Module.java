@@ -1,11 +1,14 @@
 package ru.leonidm.datapacktool.commands;
 
 import ru.leonidm.datapacktool.ModuleLoader;
-import ru.leonidm.datapacktool.Utils;
+import ru.leonidm.datapacktool.configs.ModulesConfig;
 import ru.leonidm.datapacktool.entities.NativeCommandExecutor;
+import ru.leonidm.datapacktool.utils.GitHubUtils;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Module implements NativeCommandExecutor {
 
@@ -68,19 +71,73 @@ public class Module implements NativeCommandExecutor {
                     }
                     if(!moduleName.endsWith(".jar")) moduleName += ".jar";
 
-                    File moduleFile = Utils.getFileFromGitHub(repository, moduleName);
+                    File moduleFile = GitHubUtils.getFile(repository, moduleName);
                     if(moduleFile == null) {
-                        System.out.println("Wrong name of the module! Visit https://github.com/LeonidMem/DatapackTool-Modules to get full list!");
+                        System.out.println("Wrong name of the module or repository! Visit https://github.com/LeonidMem/DatapackTool-Modules to get full list!");
                         break;
                     }
 
                     moduleInfo = ModuleLoader.loadModule(moduleFile, keys.contains("-debug"));
+
+                    String commitID = GitHubUtils.getLastFileCommitID(repository, moduleName);
+                    if(commitID != null) {
+                        moduleName = moduleName.substring(0, moduleName.length() - 4);
+                        ModulesConfig.add(moduleName + "_last_commit", commitID);
+                        ModulesConfig.add(moduleName + "_repository", repository);
+                        ModulesConfig.save();
+                    }
 
                     if(moduleInfo == null) {
                         System.out.println("Module was installed, but it works incorrectly...");
                     }
                     else {
                         System.out.println("Installed " + moduleInfo.getName() + " v" + moduleInfo.getVersion() + "!");
+                    }
+                    break;
+
+                case "update":
+                    ModuleLoader.loadModules(keys.contains("-debug"));
+
+                    List<ModuleLoader.ModuleInfo> modules = ModuleLoader.getModules();
+                    ModuleLoader.unloadModules();
+
+                    for(ModuleLoader.ModuleInfo moduleInfo1 : modules) {
+                        System.out.println("Checking for " + moduleInfo1.getName() + "'s updates...");
+
+                        moduleName = moduleInfo1.getName();
+
+                        String lastCommit = ModulesConfig.get(moduleName + "_last_commit");
+                        repository = ModulesConfig.get(moduleName + "_repository");
+
+                        commitID = GitHubUtils.getLastFileCommitID(repository, moduleName + ".jar");
+                        if(commitID == null) {
+                            System.out.println("Something went wrong! Skipping it...");
+                            continue;
+                        }
+
+                        if(commitID.equals(lastCommit)) {
+                            System.out.println("This module doesn't have any updates! Skipping it...");
+                            continue;
+                        }
+
+                        moduleFile = GitHubUtils.getFile(repository, moduleName + ".jar");
+                        if(moduleFile == null) {
+                            System.out.println("Can't get this module from GitHub! Skipping it...");
+                            break;
+                        }
+
+                        ModulesConfig.add(moduleName + "_last_commit", commitID);
+                        ModulesConfig.save();
+
+                        moduleInfo = ModuleLoader.loadModule(moduleFile, keys.contains("-debug"));
+
+                        if(moduleInfo == null) {
+                            System.out.println("Module was installed, but it works incorrectly...");
+                        }
+                        else {
+                            System.out.println("Updated " + moduleInfo.getName() + " v" + moduleInfo.getVersion() + "!");
+                        }
+
                     }
                     break;
 
@@ -102,6 +159,8 @@ public class Module implements NativeCommandExecutor {
                "    info <name> - module info\n" +
                "      -debug - show debug information\n" +
                "    download [repository] <name> - download module from official repository\n" +
+               "      -debug - show debug information" +
+               "    update - update all modules\n" +
                "      -debug - show debug information";
     }
 }

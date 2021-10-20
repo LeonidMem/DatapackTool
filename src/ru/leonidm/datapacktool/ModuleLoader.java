@@ -1,6 +1,7 @@
 package ru.leonidm.datapacktool;
 
 import ru.leonidm.datapacktool.configs.IniConfig;
+import ru.leonidm.datapacktool.utils.Utils;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -24,6 +25,10 @@ public class ModuleLoader {
                 loadModule(moduleFile, log);
             }
         }
+    }
+
+    public static void unloadModules() {
+        modules.clear();
     }
 
     public static ModuleInfo loadModule(File moduleFile, boolean log) throws Exception {

@@ -2,7 +2,7 @@ package ru.leonidm.datapacktool.commands;
 
 import ru.leonidm.datapacktool.configs.MainConfig;
 import ru.leonidm.datapacktool.ModuleLoader;
-import ru.leonidm.datapacktool.Utils;
+import ru.leonidm.datapacktool.utils.FileUtils;
 import ru.leonidm.datapacktool.entities.NativeCommandExecutor;
 import ru.leonidm.datapacktool.entities.McFunction;
 import ru.leonidm.datapacktool.events.FilesPreEndedParseEvent;
@@ -57,7 +57,7 @@ public class Build implements NativeCommandExecutor {
         String inPath = MainConfig.get(id + "_in");
         String outPath = MainConfig.get(id + "_out");
 
-        Utils.deleteDirectoryRecursively(new File(outPath));
+        FileUtils.deleteDirectoryRecursively(new File(outPath));
 
         if(inPath == null || outPath == null) {
             System.out.println("Incorrect ID \"" + id + "\"!");
@@ -65,7 +65,7 @@ public class Build implements NativeCommandExecutor {
         }
 
         System.out.println("{Phase [3/3]} Parsing...}\n");
-        List<File> files = Utils.listFilesRecursively(new File(inPath));
+        List<File> files = FileUtils.listFilesRecursively(new File(inPath));
 
         List<File> jsonFiles = new ArrayList<>();
         List<File> functionsFiles = new ArrayList<>();
@@ -86,13 +86,13 @@ public class Build implements NativeCommandExecutor {
 
         try {
             for(File jsonFile : jsonFiles) {
-                Utils.copy(jsonFile, new File(jsonFile.getAbsolutePath().replace(inPath, outPath)));
+                FileUtils.copy(jsonFile, new File(jsonFile.getAbsolutePath().replace(inPath, outPath)));
             }
 
             parseFiles(inPath, outPath, functionsFiles);
 
             for(File file : files) {
-                Utils.copy(file, new File(file.getAbsolutePath().replace(inPath, outPath)));
+                FileUtils.copy(file, new File(file.getAbsolutePath().replace(inPath, outPath)));
             }
 
             FilesPreEndedParseEvent filesPreEndedParseEvent = new FilesPreEndedParseEvent();

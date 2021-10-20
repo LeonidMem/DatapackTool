@@ -1,7 +1,7 @@
 package ru.leonidm.datapacktool.commands;
 
-import ru.leonidm.datapacktool.Utils;
 import ru.leonidm.datapacktool.entities.NativeCommandExecutor;
+import ru.leonidm.datapacktool.utils.Utils;
 
 import java.util.List;
 

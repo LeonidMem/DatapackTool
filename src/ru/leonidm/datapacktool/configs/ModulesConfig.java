@@ -5,10 +5,10 @@ import ru.leonidm.datapacktool.utils.Utils;
 import java.util.Map;
 import java.util.Set;
 
-public class MainConfig {
+public class ModulesConfig {
 
     private static final IniConfig instance;
-    private static final String configPath = System.getenv("DToolPath") + Utils.getFileSeparator() + "dtool.ini";
+    private static final String configPath = System.getenv("DToolPath") + Utils.getFileSeparator() + "modules.ini";
 
     static {
         IniConfig outInstance;

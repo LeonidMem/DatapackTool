@@ -1,7 +1,8 @@
 package ru.leonidm.datapacktool.commands;
 
-import ru.leonidm.datapacktool.Utils;
+import ru.leonidm.datapacktool.utils.FileUtils;
 import ru.leonidm.datapacktool.entities.NativeCommandExecutor;
+import ru.leonidm.datapacktool.utils.Utils;
 
 import java.io.*;
 import java.util.List;
@@ -80,8 +81,8 @@ public class Install implements NativeCommandExecutor {
             }
 
             System.out.println("Copying files...");
-            Utils.copy(directory, "DatapackTool.jar");
-            Utils.copy(directory, "dtool.bat");
+            FileUtils.copy(directory, "DatapackTool.jar");
+            FileUtils.copy(directory, "dtool.bat");
 
             if(Utils.isWindows()) {
                 System.out.println("Killing explorer.exe so variables will be refreshed...");
