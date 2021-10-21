@@ -1,6 +1,6 @@
 package ru.leonidm.datapacktool.events;
 
-public class FilesPreEndedParseEvent extends Event {
+public class FilesParsedEvent extends Event {
 
     private boolean parseNewAnonymous = false;
 

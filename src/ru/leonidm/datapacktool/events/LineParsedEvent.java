@@ -1,10 +1,13 @@
 package ru.leonidm.datapacktool.events;
 
-public class LinePreParseEvent extends Event {
+/**
+ *
+ */
+public class LineParsedEvent extends Event {
 
     private String content;
 
-    public LinePreParseEvent(String content) {
+    public LineParsedEvent(String content) {
         this.content = content;
     }
 

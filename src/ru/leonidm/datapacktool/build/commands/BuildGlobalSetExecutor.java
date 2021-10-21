@@ -2,7 +2,7 @@ package ru.leonidm.datapacktool.build.commands;
 
 import ru.leonidm.datapacktool.events.EventHandler;
 import ru.leonidm.datapacktool.events.FileParsedEvent;
-import ru.leonidm.datapacktool.events.LinePreParseEvent;
+import ru.leonidm.datapacktool.events.LineParsedEvent;
 
 import java.io.File;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class BuildGlobalSetExecutor extends BuildSetExecutor {
 
     @Override
     @EventHandler
-    public void onLinePreParse(LinePreParseEvent event) {
+    public void onLinePreParse(LineParsedEvent event) {
         onLinePreParse(event, changeFromTo);
     }
 

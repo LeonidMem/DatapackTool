@@ -5,7 +5,7 @@ import ru.leonidm.datapacktool.ModuleLoader;
 import ru.leonidm.datapacktool.utils.FileUtils;
 import ru.leonidm.datapacktool.entities.NativeCommandExecutor;
 import ru.leonidm.datapacktool.entities.McFunction;
-import ru.leonidm.datapacktool.events.FilesPreEndedParseEvent;
+import ru.leonidm.datapacktool.events.FilesParsedEvent;
 import ru.leonidm.datapacktool.managers.EventManager;
 
 import java.io.File;
@@ -95,10 +95,10 @@ public class Build implements NativeCommandExecutor {
                 FileUtils.copy(file, new File(file.getAbsolutePath().replace(inPath, outPath)));
             }
 
-            FilesPreEndedParseEvent filesPreEndedParseEvent = new FilesPreEndedParseEvent();
-            EventManager.callEvent(filesPreEndedParseEvent);
+            FilesParsedEvent filesParsedEvent = new FilesParsedEvent();
+            EventManager.callEvent(filesParsedEvent);
 
-            if(filesPreEndedParseEvent.isParseNewAnonymous()) parseFiles(inPath, outPath, anonymousFunctions);
+            if(filesParsedEvent.isParseNewAnonymous()) parseFiles(inPath, outPath, anonymousFunctions);
 
         } catch(Exception e) {
             System.out.println("\n" + e.getMessage());

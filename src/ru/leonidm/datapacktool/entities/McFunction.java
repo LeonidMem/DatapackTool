@@ -1,7 +1,7 @@
 package ru.leonidm.datapacktool.entities;
 
 import ru.leonidm.datapacktool.events.FileParsedEvent;
-import ru.leonidm.datapacktool.events.LinePreParseEvent;
+import ru.leonidm.datapacktool.events.LineParsedEvent;
 import ru.leonidm.datapacktool.managers.CommandManager;
 import ru.leonidm.datapacktool.managers.EventManager;
 import ru.leonidm.datapacktool.managers.ParameterManager;
@@ -53,9 +53,9 @@ public class McFunction {
             isCommand = false;
         }
         else {
-            LinePreParseEvent linePreParseEvent = new LinePreParseEvent(line);
-            EventManager.callEvent(linePreParseEvent);
-            line = linePreParseEvent.getContent();
+            LineParsedEvent lineParsedEvent = new LineParsedEvent(line);
+            EventManager.callEvent(lineParsedEvent);
+            line = lineParsedEvent.getContent();
 
             out.append(line).append('\n');
             return;
@@ -67,9 +67,9 @@ public class McFunction {
             line = line.replace("  ", " ");
         }
 
-        LinePreParseEvent linePreParseEvent = new LinePreParseEvent(line);
-        EventManager.callEvent(linePreParseEvent);
-        line = linePreParseEvent.getContent();
+        LineParsedEvent lineParsedEvent = new LineParsedEvent(line);
+        EventManager.callEvent(lineParsedEvent);
+        line = lineParsedEvent.getContent();
 
         String[] split = line.split(" ");
 

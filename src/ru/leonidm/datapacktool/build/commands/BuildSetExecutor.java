@@ -5,7 +5,7 @@ import ru.leonidm.datapacktool.entities.BuildCommandExecutor;
 import ru.leonidm.datapacktool.events.BuildListener;
 import ru.leonidm.datapacktool.events.EventHandler;
 import ru.leonidm.datapacktool.events.FileParsedEvent;
-import ru.leonidm.datapacktool.events.LinePreParseEvent;
+import ru.leonidm.datapacktool.events.LineParsedEvent;
 
 import java.io.File;
 import java.util.Arrays;
@@ -41,11 +41,11 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
     }
 
     @EventHandler
-    public void onLinePreParse(LinePreParseEvent event) {
+    public void onLinePreParse(LineParsedEvent event) {
         onLinePreParse(event, changeFromTo);
     }
 
-    protected void onLinePreParse(LinePreParseEvent event, Map<String, String> changeFromTo) {
+    protected void onLinePreParse(LineParsedEvent event, Map<String, String> changeFromTo) {
         String content = event.getContent();
 
         for(Map.Entry<String, String> entry : changeFromTo.entrySet()) {
