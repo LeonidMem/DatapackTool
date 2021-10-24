@@ -1,9 +1,9 @@
-package ru.leonidm.datapacktool.commands;
+package ru.leonidm.datapacktool.subcommands;
 
 import ru.leonidm.datapacktool.configs.MainConfig;
 import ru.leonidm.datapacktool.ModuleLoader;
 import ru.leonidm.datapacktool.utils.FileUtils;
-import ru.leonidm.datapacktool.entities.NativeCommandExecutor;
+import ru.leonidm.datapacktool.entities.SubcommandExecutor;
 import ru.leonidm.datapacktool.entities.McFunction;
 import ru.leonidm.datapacktool.events.FilesParsedEvent;
 import ru.leonidm.datapacktool.managers.EventManager;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Build implements NativeCommandExecutor {
+public class BuildSubcommand implements SubcommandExecutor {
 
     private static final List<File> anonymousFunctions = new ArrayList<>();
 

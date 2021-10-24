@@ -5,22 +5,39 @@ import ru.leonidm.datapacktool.build.commands.BuildGlobalSetExecutor;
 import ru.leonidm.datapacktool.build.commands.BuildSetExecutor;
 import ru.leonidm.datapacktool.build.commands.BuildVariableExecutor;
 import ru.leonidm.datapacktool.build.parameters.BuildTagExecutor;
+import ru.leonidm.datapacktool.subcommands.*;
 import ru.leonidm.datapacktool.entities.*;
 import ru.leonidm.datapacktool.managers.CommandManager;
 import ru.leonidm.datapacktool.managers.EventManager;
 import ru.leonidm.datapacktool.managers.ParameterManager;
+import ru.leonidm.datapacktool.managers.SubcommandManager;
 import ru.leonidm.datapacktool.utils.Utils;
 
 import java.util.*;
 
 public class DatapackTool {
 
-    public static void main(String[] args) {
-        NativeCommand command;
+    public static void main(String[] args) throws Exception {
+        Subcommand command;
 
-        if(args.length == 0 || (command = NativeCommand.get(args[0])) == null) {
+        registerSubcommands();
+
+        if(args.length == 0) {
+            ModuleLoader.loadModules(false);
+
+            System.out.println();
             Utils.printHelp();
             return;
+        }
+
+        if((command = SubcommandManager.getSubcommand(args[0])) == null) {
+            ModuleLoader.loadModules(false);
+
+            if((command = SubcommandManager.getSubcommand(args[0])) == null) {
+                System.out.println();
+                Utils.printHelp();
+                return;
+            }
         }
 
         registerBuildParameters();
@@ -36,6 +53,33 @@ public class DatapackTool {
 
         System.out.println();
         command.run(outArgs, outKeys);
+    }
+
+    private static void registerSubcommands() {
+        SubcommandManager.registerCommand(new SubcommandBuilder()
+                .setLabels("help", "h", "?")
+                .setExecutor(new HelpSubcommand())
+                .build());
+
+        SubcommandManager.registerCommand(new SubcommandBuilder()
+                .setLabels("install")
+                .setExecutor(new InstallSubcommand())
+                .build());
+
+        SubcommandManager.registerCommand(new SubcommandBuilder()
+                .setLabels("config")
+                .setExecutor(new ConfigSubcommand())
+                .build());
+
+        SubcommandManager.registerCommand(new SubcommandBuilder()
+                .setLabels("build")
+                .setExecutor(new BuildSubcommand())
+                .build());
+
+        SubcommandManager.registerCommand(new SubcommandBuilder()
+                .setLabels("module")
+                .setExecutor(new ModuleSubcommand())
+                .build());
     }
 
     private static void registerBuildCommands() {

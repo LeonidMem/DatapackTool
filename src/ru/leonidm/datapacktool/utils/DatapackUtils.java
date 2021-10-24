@@ -3,7 +3,7 @@ package ru.leonidm.datapacktool.utils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import ru.leonidm.datapacktool.commands.Build;
+import ru.leonidm.datapacktool.subcommands.BuildSubcommand;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -104,7 +104,7 @@ public class DatapackUtils {
         outputStream.write(anonymousFunctionContent.getBytes(StandardCharsets.UTF_8));
         outputStream.close();
 
-        Build.addAnonymousFunction(anonymousFile);
+        BuildSubcommand.addAnonymousFunction(anonymousFile);
 
         return getFunctionMinecraftFormattedName(anonymousFile);
     }

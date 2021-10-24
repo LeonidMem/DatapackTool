@@ -1,6 +1,7 @@
 package ru.leonidm.datapacktool.utils;
 
-import ru.leonidm.datapacktool.entities.NativeCommand;
+import ru.leonidm.datapacktool.entities.Subcommand;
+import ru.leonidm.datapacktool.managers.SubcommandManager;
 
 public class Utils {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
@@ -23,7 +24,7 @@ public class Utils {
 
     public static void printHelp() {
         System.out.println("DatapackTool's subcommands:");
-        for(NativeCommand command : NativeCommand.values()) {
+        for(Subcommand command : SubcommandManager.getSubcommands()) {
             if(command.getInfo() == null) continue;
             System.out.println();
             System.out.println(command.getInfo());

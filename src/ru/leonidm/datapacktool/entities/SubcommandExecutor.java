@@ -2,7 +2,7 @@ package ru.leonidm.datapacktool.entities;
 
 import java.util.List;
 
-public interface NativeCommandExecutor {
+public interface SubcommandExecutor {
 
     void run(List<String> args, List<String> keys);
 

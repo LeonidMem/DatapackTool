@@ -1,11 +1,11 @@
-package ru.leonidm.datapacktool.commands;
+package ru.leonidm.datapacktool.subcommands;
 
-import ru.leonidm.datapacktool.entities.NativeCommandExecutor;
+import ru.leonidm.datapacktool.entities.SubcommandExecutor;
 import ru.leonidm.datapacktool.utils.Utils;
 
 import java.util.List;
 
-public class Help implements NativeCommandExecutor {
+public class HelpSubcommand implements SubcommandExecutor {
 
     @Override
     public void run(List<String> args, List<String> keys) {

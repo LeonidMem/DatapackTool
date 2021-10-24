@@ -1,14 +1,14 @@
-package ru.leonidm.datapacktool.commands;
+package ru.leonidm.datapacktool.subcommands;
 
 import ru.leonidm.datapacktool.ModuleLoader;
 import ru.leonidm.datapacktool.configs.ModulesConfig;
-import ru.leonidm.datapacktool.entities.NativeCommandExecutor;
+import ru.leonidm.datapacktool.entities.SubcommandExecutor;
 import ru.leonidm.datapacktool.utils.GitHubUtils;
 
 import java.io.File;
 import java.util.List;
 
-public class Module implements NativeCommandExecutor {
+public class ModuleSubcommand implements SubcommandExecutor {
 
     @Override
     public void run(List<String> args, List<String> keys) {
