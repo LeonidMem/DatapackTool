@@ -57,7 +57,7 @@ public class Build implements NativeCommandExecutor {
         String inPath = MainConfig.get(id + "_in");
         String outPath = MainConfig.get(id + "_out");
 
-        FileUtils.deleteDirectoryRecursively(new File(outPath));
+        FileUtils.deleteFilesRecursively(new File(outPath));
 
         if(inPath == null || outPath == null) {
             System.out.println("Incorrect ID \"" + id + "\"!");

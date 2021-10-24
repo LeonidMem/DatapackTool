@@ -1,15 +1,17 @@
 package ru.leonidm.datapacktool.utils;
 
-import ru.leonidm.datapacktool.DatapackTool;
-
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
 
+    /**
+     * Copies files
+     * @param from File which will be copied
+     * @param to Where to
+     * @throws IOException
+     */
     public static void copy(File from, File to) throws IOException {
         InputStream fromInputStream = new FileInputStream(from);
 
@@ -24,6 +26,12 @@ public class FileUtils {
         toOutputStream.close();
     }
 
+    /**
+     * Copies files
+     * @param directory Directory where located new file will be
+     * @param name Name of the file to copy in the same directory
+     * @throws IOException
+     */
     public static void copy(File directory, String name) throws IOException {
         File resourceFile = new File(name);
         InputStream resourceInputStream = new FileInputStream(resourceFile);
@@ -42,19 +50,11 @@ public class FileUtils {
         resourceOutputStream.close();
     }
 
-    public static void copyFromResource(File directory, String name) throws IOException {
-        InputStream resourceInputStream = DatapackTool.class.getResourceAsStream(name);
-
-        File outFile = new File(directory, name);
-        outFile.createNewFile();
-
-        OutputStream resourceOutputStream = new FileOutputStream(outFile);
-        resourceOutputStream.write(resourceInputStream.readAllBytes());
-
-        resourceInputStream.close();
-        resourceOutputStream.close();
-    }
-
+    /**
+     * List all files recursively
+     * @param directory Directory
+     * @return List of the files
+     */
     public static List<File> listFilesRecursively(File directory) {
         List<File> output = new ArrayList<>();
 
@@ -68,12 +68,16 @@ public class FileUtils {
         return output;
     }
 
-    public static void deleteDirectoryRecursively(File directory) {
+    /**
+     * Deletes all files recursively
+     * @param directory Directory
+     */
+    public static void deleteFilesRecursively(File directory) {
         File[] files = directory.listFiles();
         if(files != null) {
             for(File file : files) {
                 if(file.isDirectory()) {
-                    deleteDirectoryRecursively(file);
+                    deleteFilesRecursively(file);
                     directory.delete();
                 }
                 else file.delete();

@@ -35,11 +35,6 @@ public class Install implements NativeCommandExecutor {
 
         try {
             if(Utils.isWindows()) {
-                if(!Utils.isWindowsAdmin()) {
-                    System.out.println("Run .bat as Administrator!");
-                    return;
-                }
-
                 String outVariablePath = path.substring(0, path.length() - 1);
                 String pathEnv = System.getenv("Path");
                 if(!pathEnv.contains(outVariablePath)) {

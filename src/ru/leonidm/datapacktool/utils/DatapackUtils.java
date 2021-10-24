@@ -13,6 +13,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 public class DatapackUtils {
+
+    /**
+     * Returns minecraft formatted name of the function,
+     * for example
+     *
+     * @param file File of the function
+     * @return Minecraft formatted name of the function
+     */
     public static String getFunctionMinecraftFormattedName(File file) {
         String namespace;
         File outDirectory = file;
@@ -38,6 +46,14 @@ public class DatapackUtils {
         return namespace + ":" + directory + file.getName().substring(0, file.getName().length() - 11);
     }
 
+    /**
+     * Adds value to the Minecraft tag
+     * @param outFile Out file
+     * @param minecraftFormattedTag Minecraft formatted tag (f.e. "minecraft:load")
+     * @param category Minecraft category ("blocks", "functions" and other)
+     * @param value Value to add
+     * @throws Exception
+     */
     public static void addValueToTag(File outFile, String minecraftFormattedTag, String category, String value) throws Exception {
         String[] splitTag = minecraftFormattedTag.split(":");
         if(splitTag.length != 2) throw new Exception("Illegal tag!");
@@ -74,6 +90,13 @@ public class DatapackUtils {
         outputStream.close();
     }
 
+    /**
+     * Creates anonymous function in the datapack
+     * @param outFile Out file
+     * @param anonymousFunctionContent Content of the anonymous function
+     * @return Minecraft formatted name of the anonymous function
+     * @throws IOException
+     */
     public static String createAnonymousFunction(File outFile, String anonymousFunctionContent) throws IOException {
 
         File anonymousFile = new File(outFile.getParentFile(), outFile.getName().substring(0, outFile.getName().length() - 11) + anonymousFunctionContent.hashCode() + ".mcfunction");

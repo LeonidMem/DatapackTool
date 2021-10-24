@@ -14,6 +14,10 @@ public class EventManager {
     private final static HashMap<Class<? extends Event>, Set<Method>> methods = new HashMap<>();
     private final static HashMap<Method, BuildListener> listeners = new HashMap<>();
 
+    /**
+     * Register listener
+     * @param listener
+     */
     public static void registerListener(BuildListener listener) {
         try {
             for(Method method : listener.getClass().getMethods()) {
@@ -41,6 +45,10 @@ public class EventManager {
         }
     }
 
+    /**
+     * Notify all listeners about this event
+     * @param event
+     */
     public static void callEvent(Event event) {
         Set<Method> methods = EventManager.methods.get(event.getClass());
         if(methods == null) return;

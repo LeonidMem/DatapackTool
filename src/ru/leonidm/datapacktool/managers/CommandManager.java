@@ -9,6 +9,10 @@ public class CommandManager {
 
     private final static Map<String, BuildCommand> commands = new HashMap<>();
 
+    /**
+     * Register command
+     * @param command
+     */
     public static void registerCommand(BuildCommand command) {
         commands.put(command.getLabel(), command);
     }

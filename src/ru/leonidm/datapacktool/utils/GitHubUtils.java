@@ -6,6 +6,13 @@ import java.net.URL;
 
 public class GitHubUtils {
 
+    /**
+     * Gets last file's commit ID from GitHub repository
+     * @param repository Name of the repository
+     * @param fileName Name of the file (with extension)
+     * @return Commit ID or null if this file doesn't exist
+     * @throws IOException
+     */
     public static String getLastFileCommitID(String repository, String fileName) throws IOException {
         URL url = new URL("https://github.com/" + repository + "/contributors/main/" + fileName);
 
@@ -34,6 +41,13 @@ public class GitHubUtils {
         return commitID;
     }
 
+    /**
+     * Download module from the GitHub
+     * @param repository Name of the repository
+     * @param fileName Name of the file (with extension)
+     * @return File of the module or null if this file doesn't exist
+     * @throws IOException
+     */
     public static File getFile(String repository, String fileName) throws IOException {
         URL url = new URL("https://github.com/" + repository + "/raw/main/" + fileName);
 

@@ -9,6 +9,9 @@ public interface NativeCommandExecutor {
     String info();
 
     default void exit() {
-        System.out.println("Incorrect arguments!\n" + info());
+        System.out.println("Incorrect arguments!");
+
+        String info = info();
+        if(info != null) System.out.println(info);
     }
 }

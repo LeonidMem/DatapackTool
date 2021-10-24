@@ -7,8 +7,6 @@ import ru.leonidm.datapacktool.utils.GitHubUtils;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class Module implements NativeCommandExecutor {
 

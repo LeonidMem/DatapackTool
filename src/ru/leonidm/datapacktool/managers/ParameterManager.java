@@ -7,14 +7,18 @@ import java.util.Map;
 
 public class ParameterManager {
 
-    private final static Map<String, BuildParameter> commands = new HashMap<>();
+    private final static Map<String, BuildParameter> parameters = new HashMap<>();
 
-    public static void registerParameter(BuildParameter command) {
-        commands.put(command.getLabel(), command);
+    /**
+     * Register parameter
+     * @param parameter
+     */
+    public static void registerParameter(BuildParameter parameter) {
+        parameters.put(parameter.getLabel(), parameter);
     }
 
     public static BuildParameter getParameter(String label) {
-        return commands.get(label);
+        return parameters.get(label);
     }
 
 }

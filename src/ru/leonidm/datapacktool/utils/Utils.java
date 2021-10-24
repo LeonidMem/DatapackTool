@@ -7,20 +7,16 @@ public class Utils {
     static final String fileSeparator = isWindows() ? "\\": "/";
     private static final String regexFileSeparator = fileSeparator.replace("\\", "\\\\");
 
+    /**
+     * @return True if current OS is Windows
+     */
     public static boolean isWindows() {
         return isWindows;
     }
 
-    public static boolean isWindowsAdmin() {
-        String[] groups = (new com.sun.security.auth.module.NTSystem()).getGroupIDs();
-        for(String group : groups) {
-            if(group.equals("S-1-5-32-544")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * @return File separator in player's OS
+     */
     public static String getFileSeparator() {
         return fileSeparator;
     }
