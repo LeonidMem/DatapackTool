@@ -33,7 +33,4 @@ public class BuildCommandBuilder {
         if(executor == null) throw new IllegalArgumentException("Executor is null!");
         return new BuildCommand(label, executor, settings);
     }
-
-
-
 }

@@ -8,8 +8,8 @@ import ru.leonidm.datapacktool.events.FileParsedEvent;
 import ru.leonidm.datapacktool.events.LineParsedEvent;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
@@ -17,25 +17,26 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
     private final static Map<String, String> changeFromTo = new HashMap<>();
 
     @Override
-    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
+    public void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
         execute(args, changeFromTo);
     }
 
-    protected void execute(String[] args, Map<String, String> changeFromTo) throws Exception {
-        if(args.length == 0) {
+    protected void execute(List<String> args, Map<String, String> changeFromTo) throws Exception {
+        if(args.size() == 0) {
             throw new Exception(Messages.ILLEGAL_AMOUNT_OF_ARGS);
         }
 
-        if(args.length == 1) {
-            String key = "%" + args[0] + "%";
+        if(args.size() == 1) {
+            String key = "%" + args.get(0) + "%";
             changeFromTo.remove(key);
             return;
         }
 
         String key;
-        if(args[0].startsWith("%") && args[0].endsWith("%")) key = args[0];
-        else key = "%" + args[0] + "%";
-        String value = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        if(args.get(0).startsWith("%") && args.get(0).endsWith("%")) key = args.get(0);
+        else key = "%" + args.get(0) + "%";
+        args.remove(0);
+        String value = String.join(" ", args);
 
         changeFromTo.put(key, value);
     }

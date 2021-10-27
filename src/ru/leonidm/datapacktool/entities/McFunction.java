@@ -8,7 +8,9 @@ import ru.leonidm.datapacktool.managers.ParameterManager;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class McFunction {
 
@@ -81,7 +83,10 @@ public class McFunction {
             }
 
             try {
-                parameter.execute(Arrays.copyOfRange(split, 1, split.length), inFile, outFile);
+                List<String> arguments = new ArrayList<>();
+                arguments.addAll(Arrays.asList(split).subList(1, split.length));
+
+                parameter.execute(arguments, inFile, outFile);
             } catch(Exception e) {
                 throw new Exception("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line);
             }
@@ -96,7 +101,13 @@ public class McFunction {
 
         StringBuilder anonymousContent = null;
 
-        if(line.endsWith("{")) {
+
+        List<String> arguments = new ArrayList<>();
+        arguments.addAll(Arrays.asList(split).subList(1, split.length));
+
+        if(line.endsWith(" {")) {
+
+            arguments.remove("{");
 
             int anonymousStartLineNumber = lineNumber;
 
@@ -108,7 +119,7 @@ public class McFunction {
 
                 lineNumber += 1;
 
-                if((anonymousLine = anonymousLine.strip()).endsWith("{")) {
+                if((anonymousLine = anonymousLine.strip()).endsWith(" {")) {
                     figureBracketStack += 1;
                 }
 
@@ -125,7 +136,7 @@ public class McFunction {
         }
 
         try {
-            command.execute(out, Arrays.copyOfRange(split, 1, split.length),
+            command.execute(out, arguments,
                     anonymousContent == null ? null : anonymousContent.toString(),
                     inFile, outFile);
         } catch(Exception e) {

@@ -6,6 +6,7 @@ import ru.leonidm.datapacktool.events.LineParsedEvent;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BuildGlobalSetExecutor extends BuildSetExecutor {
@@ -13,7 +14,7 @@ public class BuildGlobalSetExecutor extends BuildSetExecutor {
     private final static Map<String, String> changeFromTo = new HashMap<>();
 
     @Override
-    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
+    public void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
         execute(args, changeFromTo);
     }
 

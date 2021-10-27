@@ -18,11 +18,11 @@ public class BuildParameter {
         this.settings = settings;
     }
 
-    public void execute(String[] args, File inFile, File outFile) throws Exception {
+    public void execute(List<String> args, File inFile, File outFile) throws Exception {
         Setting<?> setting = settings.get(Setting.Type.ARGS_AMOUNT);
 
         if(setting != null) {
-            if(!((Setting<List<Integer>>) setting).getValue().contains(args.length)) {
+            if(!((Setting<List<Integer>>) setting).getValue().contains(args.size())) {
                 throw new Exception(Messages.ILLEGAL_AMOUNT_OF_ARGS);
             }
         }

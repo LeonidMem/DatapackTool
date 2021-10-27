@@ -1,6 +1,7 @@
 package ru.leonidm.datapacktool.entities;
 
 import java.io.File;
+import java.util.List;
 
 public interface BuildCommandExecutor {
 
@@ -13,6 +14,6 @@ public interface BuildCommandExecutor {
      * @param outFile File object of the output file
      * @throws Exception
      */
-    void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile) throws Exception;
+    void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent, File inFile, File outFile) throws Exception;
 
 }

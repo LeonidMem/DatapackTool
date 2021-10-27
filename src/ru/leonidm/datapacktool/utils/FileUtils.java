@@ -13,6 +13,7 @@ public class FileUtils {
      * @throws IOException
      */
     public static void copy(File from, File to) throws IOException {
+        to.getParentFile().mkdirs();
         InputStream fromInputStream = new FileInputStream(from);
 
         to.delete();

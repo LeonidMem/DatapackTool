@@ -11,40 +11,40 @@ public class BuildVariableExecutor implements BuildCommandExecutor {
     private final List<String> mathSigns = Arrays.asList("=", ">", "<", "><", "/=", "-=", "+=", "*=", "%=");
 
     @Override
-    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
-        if(args.length == 3) {
+    public void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
+        if(args.size() == 3) {
             try {
-                Integer.parseInt(args[2]);
+                Integer.parseInt(args.get(2));
             } catch(Exception e) {
                 throw new Exception("Last value must be integer!");
             }
 
             outFileBuilder.append("scoreboard players set ")
-                          .append(args[0])
+                          .append(args.get(0))
                           .append(" ")
-                          .append(args[1])
+                          .append(args.get(1))
                           .append(" ")
-                          .append(args[2])
+                          .append(args.get(2))
                           .append("\n");
             return;
         }
 
-        if(args.length == 5) {
+        if(args.size() == 5) {
 
-            if(!mathSigns.contains(args[2])) {
+            if(!mathSigns.contains(args.get(2))) {
                 throw new Exception("Unknown math sign!");
             }
 
             outFileBuilder.append("scoreboard players operation ")
-                          .append(args[0])
+                          .append(args.get(0))
                           .append(" ")
-                          .append(args[1])
+                          .append(args.get(1))
                           .append(" ")
-                          .append(args[2])
+                          .append(args.get(2))
                           .append(" ")
-                          .append(args[3])
+                          .append(args.get(3))
                           .append(" ")
-                          .append(args[4])
+                          .append(args.get(4))
                           .append("\n");
 
         }

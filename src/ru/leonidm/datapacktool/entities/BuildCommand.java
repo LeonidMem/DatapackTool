@@ -18,10 +18,10 @@ public class BuildCommand {
         this.settings = settings;
     }
 
-    public void execute(StringBuilder outFileBuilder, String[] args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
+    public void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
         Setting<?> setting = settings.get(Setting.Type.ARGS_AMOUNT);
         if(setting != null) {
-            if(!((Setting<List<Integer>>) setting).getValue().contains(args.length)) {
+            if(!((Setting<List<Integer>>) setting).getValue().contains(args.size())) {
                 throw new Exception(Messages.ILLEGAL_AMOUNT_OF_ARGS);
             }
         }
