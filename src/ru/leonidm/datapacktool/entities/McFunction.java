@@ -59,7 +59,9 @@ public class McFunction {
             EventManager.callEvent(lineParsedEvent);
             line = lineParsedEvent.getContent();
 
-            out.append(line).append('\n');
+            if(!line.strip().equals("") && !line.startsWith("#")) {
+                out.append(line).append('\n');
+            }
             return;
         }
 
