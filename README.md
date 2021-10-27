@@ -1,5 +1,7 @@
 # DatapackTool
- Very powerful tool for the datapacks' creators
+Very powerful tool for the datapacks' creators
+
+## Example: [GitHub Wiki](https://github.com/LeonidMem/DatapackTool/wiki/Example)
 
 # Brief Wiki
 
