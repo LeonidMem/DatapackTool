@@ -157,7 +157,7 @@ public class ModuleSubcommand implements SubcommandExecutor {
                "    info <name> - module info\n" +
                "      -debug - show debug information\n" +
                "    download [repository] <name> - download module from official repository\n" +
-               "      -debug - show debug information" +
+               "      -debug - show debug information\n" +
                "    update - update all modules\n" +
                "      -debug - show debug information";
     }
