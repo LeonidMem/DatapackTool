@@ -3,10 +3,10 @@
 
 # Set variables
 #! set message Thanks for installing! This datapack was made with DTool!
+#! set color green
 
-# Don't use % in "set" command, because it may be replaced with the value of this variable,
-# but if not, it will be interpreted correctly
-#! set %color% green
+# Don't use % in "set" command, because it may be replaced with the value of this variable
+#! set %color% red
 
 tellraw @a {"text":"%message%","color":"%color%"}
 # By the way, all variables are case insensitive, so you can use it like here:

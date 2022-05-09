@@ -2,12 +2,15 @@
 #$ tag minecraft:tick
 
 # Creating the timer, so all heavy calculations will be called once in two seconds
-scoreboard players add *timer example.timer 1
+
+# Alias for 'scoreboard players add *timer example.timer 1':
+#! var *timer example.timer +1
 
 # Just common execute, but more readable and optimized
-#! execute if score *timer example.timer matches 40.. { 
+#! execute if score *timer example.timer matches 40.. {
 
-    scoreboard players set *timer example.timer 0
+    # Alias for 'scoreboard players set *timer example.timer 0':
+    #! var *timer example.timer =0
 
     #! execute as @e[tag=!example.checked] {
 

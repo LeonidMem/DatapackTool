@@ -3,7 +3,6 @@ package ru.leonidm.datapacktool.build.commands;
 import ru.leonidm.datapacktool.events.EventHandler;
 import ru.leonidm.datapacktool.events.FileParsedEvent;
 import ru.leonidm.datapacktool.events.LineParsedEvent;
-import ru.leonidm.datapacktool.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
