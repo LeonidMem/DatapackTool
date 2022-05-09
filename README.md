@@ -96,8 +96,48 @@ building the project, just know it.
 * `%variable_name%` - get value from the variable with specified name if exists, otherwise, nothing changes.
 Can be used in any context.
 
-## Micro-features
-* You can use `#%` in the start of the command, and it will be removed on compilation.
+## Other features
+* Extended function. Now you can set arguments for the functions. Finally.
+
+**Source code:**
+
+**`data/example/functions/load.mcfunction`**:
+```
+#% function example:raw_function Single word "or two and more, if there are quotes"
+```
+
+**`data/example/functions/raw_function.mcfunction`**:
+```
+# The first argument is "Single"
+say %0
+
+# The second argument is "word"
+say %1
+
+# The third argument is "or two and more, if there are quotes"
+say %2
+
+# \% needs to avoid replacement of this percentage symbol as extended function argument
+# \% will be replaced to % after compilation
+say \%3
+```
+
+**Compiled code:**
+
+**`data/example/functions/load.mcfunction`**:
+```
+function example:load342665618
+```
+
+**`data/example/functions/load342665618.mcfunction`**:
+```
+say Single
+say word
+say or two and more, if there are quotes
+say %3
+```
+
+* You can use `#%` in the start of the command, and "#%" will be removed on compilation.
 
 It's useful when you use Visual Studio Code with extension for datapacks development and you don't want to see 
 red error highlights.
