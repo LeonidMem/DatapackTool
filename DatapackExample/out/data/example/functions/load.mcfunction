@@ -1,5 +1,5 @@
-tellraw @a {"text":"%message%","color":"%color%"}
-tellraw @a {"text":"Current version: %version%","color":"%COLOR%"}
+tellraw @a {"text":"Thanks for installing! This datapack was made with DTool!","color":"green"}
+tellraw @a {"text":"Current version: 1.0.0","color":"green"}
 say %unset_variable%
 scoreboard objectives add example.timer dummy
 function example:load342665618

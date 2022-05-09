@@ -8,8 +8,8 @@ import ru.leonidm.datapacktool.events.*;
 
 import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
 
@@ -34,13 +34,11 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
             return;
         }
 
-        String key;
-        if(args.get(0).startsWith("%") && args.get(0).endsWith("%")) key = args.get(0);
-        else key = "%" + args.get(0) + "%";
+        String key = args.get(0);
         args.remove(0);
         String value = String.join(" ", args);
 
-        changeFromTo.put(key.toLowerCase(), value);
+        changeFromTo.put(key.replace("%", ""), value);
     }
 
     @EventHandler
@@ -51,27 +49,53 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
     protected void onLineParsed(LineParsedEvent event, Map<String, String> changeFromTo) {
         String content = event.getContent();
 
-        String[] entries = content.split("((?<=(?:%[^ ]{1,1000}%))|(?=(?:%[^ ]{1,1000}%)))");
+        if(!content.contains("%")) return;
+
         StringBuilder editedContent = new StringBuilder();
 
         int lineNumber = event.getLineNumber();
 
-        for(String entry : entries) {
-            Matcher matcher = varPattern.matcher(entry);
-            if(!matcher.matches()) {
-                editedContent.append(entry);
+        boolean keyFound = false;
+        StringBuilder keyBuilder = new StringBuilder();
+        for(char c : content.toCharArray()) {
+            if(!keyFound) {
+                if(c != '%') {
+                    editedContent.append(c);
+                }
+                else {
+                    keyFound = true;
+                }
+
                 continue;
             }
 
-            String value = changeFromTo.get(entry.toLowerCase());
-            if(value == null) {
-                warns.add(new Pair<>(entry, lineNumber));
-                editedContent.append(entry);
-                continue;
+            if(c == ' ') {
+                keyFound = false;
+                keyBuilder.setLength(0);
             }
+            else if(c != '%') {
+                keyBuilder.append(c);
+            }
+            else {
+                keyFound = false;
 
-            editedContent.append(value);
-            warns.remove(new Pair<>(entry, lineNumber));
+                String key = keyBuilder.toString();
+                keyBuilder.setLength(0);
+
+                String value = changeFromTo.get(key.toLowerCase());
+                if(value == null) {
+                    warns.add(new Pair<>(key, lineNumber));
+                    editedContent.append('%').append(key).append('%');
+                    continue;
+                }
+
+                warns.remove(new Pair<>(key, lineNumber));
+                editedContent.append(value);
+            }
+        }
+
+        if(keyBuilder.length() > 0) {
+            editedContent.append('%').append(keyBuilder);
         }
 
         event.setContent(editedContent.toString());
@@ -81,7 +105,8 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
     private void onFileParsed(FileParsedEvent event) {
         if(event.getFileType() == FileParsedEvent.FileType.SOURCE) changeFromTo.clear();
 
-        for(Pair<String, Integer> warn : warns) {
+        for(Pair<String, Integer> warn : warns.parallelStream().sorted(Comparator.comparingInt(Pair::getRight))
+                .collect(Collectors.toList())) {
             System.out.println("[WARN] [line:" + warn.getRight() + "] Variable \"" + warn.getLeft() + "\" is unset!");
         }
 

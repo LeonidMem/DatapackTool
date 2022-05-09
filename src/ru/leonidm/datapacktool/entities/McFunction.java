@@ -70,6 +70,7 @@ public class McFunction {
 
                 LineParsedEvent lineParsedEvent = new LineParsedEvent(inFile, outFile, line, lineNumber);
                 lineParsedEvent.call();
+
                 line = lineParsedEvent.getContent();
 
                 if(!line.isBlank() && !line.startsWith("#")) {
