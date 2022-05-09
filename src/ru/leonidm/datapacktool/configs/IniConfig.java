@@ -54,8 +54,9 @@ public class IniConfig {
         return config.get(key.toLowerCase());
     }
 
-    public void add(String key, String value) {
-        config.put(key.toLowerCase(), value);
+    public void set(String key, String value) {
+        if(value == null) config.remove(key.toLowerCase());
+        else config.put(key.toLowerCase(), value);
     }
 
     public void remove(String key) {

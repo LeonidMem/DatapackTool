@@ -70,6 +70,7 @@ public class InstallSubcommand implements SubcommandExecutor {
                 }
             }
             else {
+                // TODO: linux support
                 System.out.println("Changing $PATH...");
                 Process p = Runtime.getRuntime().exec("export PATH=\"$HOME/bin:$PATH\"");
                 p.waitFor();
@@ -86,6 +87,7 @@ public class InstallSubcommand implements SubcommandExecutor {
 
                 System.out.println("Starting explorer.exe...");
                 p = Runtime.getRuntime().exec("explorer.exe");
+                p.waitFor();
             }
 
             System.out.println("Installed successfully!");

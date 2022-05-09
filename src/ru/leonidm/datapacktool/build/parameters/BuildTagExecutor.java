@@ -10,6 +10,7 @@ public class BuildTagExecutor implements BuildParameterExecutor {
 
     @Override
     public void execute(List<String> args, File inFile, File outFile) throws Exception {
-        DatapackUtils.addValueToTag(outFile, args.get(0), "functions", DatapackUtils.getFunctionMinecraftFormattedName(outFile));
+        DatapackUtils.addValueToTag(outFile, args.get(0), "functions",
+                DatapackUtils.getFunctionName(outFile));
     }
 }

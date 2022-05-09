@@ -25,8 +25,8 @@ public class ModulesConfig {
         return instance.get(key);
     }
 
-    public static void add(String key, String value) {
-        instance.add(key, value);
+    public static void set(String key, String value) {
+        instance.set(key, value);
     }
 
     public static void remove(String key) {

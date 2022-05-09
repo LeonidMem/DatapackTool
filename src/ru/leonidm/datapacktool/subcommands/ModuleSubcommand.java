@@ -80,8 +80,8 @@ public class ModuleSubcommand implements SubcommandExecutor {
                     String commitID = GitHubUtils.getLastFileCommitID(repository, moduleName);
                     if(commitID != null) {
                         moduleName = moduleName.substring(0, moduleName.length() - 4);
-                        ModulesConfig.add(moduleName + "_last_commit", commitID);
-                        ModulesConfig.add(moduleName + "_repository", repository);
+                        ModulesConfig.set(moduleName + "_last_commit", commitID);
+                        ModulesConfig.set(moduleName + "_repository", repository);
                         ModulesConfig.save();
                     }
 
@@ -124,7 +124,7 @@ public class ModuleSubcommand implements SubcommandExecutor {
                             break;
                         }
 
-                        ModulesConfig.add(moduleName + "_last_commit", commitID);
+                        ModulesConfig.set(moduleName + "_last_commit", commitID);
                         ModulesConfig.save();
 
                         moduleInfo = ModuleLoader.loadModule(moduleFile, keys.contains("-debug"));

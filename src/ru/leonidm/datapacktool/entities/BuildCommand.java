@@ -5,6 +5,7 @@ import ru.leonidm.datapacktool.Messages;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class BuildCommand {
 
@@ -18,11 +19,12 @@ public class BuildCommand {
         this.settings = settings;
     }
 
-    public void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
+    public void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent,
+                        File inFile, File outFile) throws Exception {
         Setting<?> setting = settings.get(Setting.Type.ARGS_AMOUNT);
         if(setting != null) {
-            if(!((Setting<List<Integer>>) setting).getValue().contains(args.size())) {
-                throw new Exception(Messages.ILLEGAL_AMOUNT_OF_ARGS);
+            if(!((Setting<Set<Integer>>) setting).getValue().contains(args.size())) {
+                throw new BuildException(Messages.ILLEGAL_AMOUNT_OF_ARGS);
             }
         }
 
@@ -30,7 +32,7 @@ public class BuildCommand {
             setting = settings.get(Setting.Type.TAKE_ANONYMOUS_FUNCTION_AS_ARG);
 
             if(setting != null && !((Setting<Boolean>) setting).getValue()) {
-                throw new Exception("This command can't be used with anonymous function!");
+                throw new BuildException("This command can't be used with anonymous function!");
             }
 
             boolean hasAnonymousFunction = ((Setting<Boolean>) setting).getValue();
@@ -39,7 +41,7 @@ public class BuildCommand {
             setting = settings.get(Setting.Type.THERE_MUST_BE_ANONYMOUS_FUNCTION);
 
             if(setting != null && ((Setting<Boolean>) setting).getValue()) {
-                throw new Exception("You must specify anonymous function as argument here!");
+                throw new BuildException("You must specify anonymous function as argument here!");
             }
         }
 
@@ -60,7 +62,7 @@ public class BuildCommand {
 
         }
 
-        public static final Setting<List<Integer>> ARGS_AMOUNT = new Setting<>(Type.ARGS_AMOUNT, null);
+        public static final Setting<Set<Integer>> ARGS_AMOUNT = new Setting<>(Type.ARGS_AMOUNT, null);
         public static final Setting<Boolean> TAKE_ANONYMOUS_FUNCTION_AS_ARG = new Setting<>(Type.TAKE_ANONYMOUS_FUNCTION_AS_ARG, null);
         public static final Setting<Boolean> THERE_MUST_BE_ANONYMOUS_FUNCTION = new Setting<>(Type.THERE_MUST_BE_ANONYMOUS_FUNCTION, null);
 

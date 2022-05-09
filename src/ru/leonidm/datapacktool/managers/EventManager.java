@@ -20,20 +20,21 @@ public class EventManager {
      */
     public static void registerListener(BuildListener listener) {
         try {
-            for(Method method : listener.getClass().getMethods()) {
+            for(Method method : listener.getClass().getDeclaredMethods()) {
+                method.setAccessible(true);
 
                 EventHandler eventHandler = method.getAnnotation(EventHandler.class);
                 if(eventHandler == null) continue;
 
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 if(parameterTypes.length != 1) {
-                    System.out.println("[EventManager -> " + listener.getClass().getName() + "#" + method.getName() + "] There must be only one parameter!");
+                    System.err.println("[EventManager -> " + listener.getClass().getName() + "#" + method.getName() + "] There must be only one parameter!");
                     continue;
                 }
 
                 Class<?> parameterType = parameterTypes[0];
                 if(!Event.class.isAssignableFrom(parameterType)) {
-                    System.out.println("[EventManager -> " + listener.getClass().getName() + "#" + method.getName() + "] Type of the first parameter must extend from Event!");
+                    System.err.println("[EventManager -> " + listener.getClass().getName() + "#" + method.getName() + "] Type of the first parameter must extend from Event!");
                     continue;
                 }
 
@@ -49,16 +50,12 @@ public class EventManager {
      * Notify all listeners about this event
      * @param event
      */
-    public static void callEvent(Event event) {
+    public static void callEvent(Event event) throws Exception {
         Set<Method> methods = EventManager.methods.get(event.getClass());
         if(methods == null) return;
         for(Method method : methods) {
-            try {
-                BuildListener listener = listeners.get(method);
-                method.invoke(listener, event);
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
+            BuildListener listener = listeners.get(method);
+            method.invoke(listener, event);
         }
     }
 }

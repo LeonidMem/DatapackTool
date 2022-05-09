@@ -2,7 +2,9 @@ package ru.leonidm.datapacktool.utils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FileUtils {
 
@@ -56,8 +58,9 @@ public class FileUtils {
      * @param directory Directory
      * @return List of the files
      */
-    public static List<File> listFilesRecursively(File directory) {
-        List<File> output = new ArrayList<>();
+    // TODO: optimize
+    public static Set<File> listFilesRecursively(File directory) {
+        Set<File> output = new HashSet<>();
 
         File[] files = directory.listFiles();
         if(files != null) {

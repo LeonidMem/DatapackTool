@@ -29,5 +29,6 @@ public class Utils {
             System.out.println();
             System.out.println(command.getInfo());
         }
+        System.out.println();
     }
 }

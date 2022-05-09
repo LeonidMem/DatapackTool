@@ -3,12 +3,10 @@ package ru.leonidm.datapacktool.utils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import ru.leonidm.datapacktool.entities.BuildException;
 import ru.leonidm.datapacktool.subcommands.BuildSubcommand;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
@@ -21,7 +19,7 @@ public class DatapackUtils {
      * @param file File of the function
      * @return Minecraft formatted name of the function
      */
-    public static String getFunctionMinecraftFormattedName(File file) {
+    public static String getFunctionName(File file) {
         String namespace;
         File outDirectory = file;
         while(true) {
@@ -46,6 +44,18 @@ public class DatapackUtils {
         return namespace + ":" + directory + file.getName().substring(0, file.getName().length() - 11);
     }
 
+    public static File getFunctionFromName(File inFile, String minecraftFormattedTag) throws Exception {
+        String[] splitTag = minecraftFormattedTag.split(":");
+        if(splitTag.length != 2)
+            throw new BuildException("Wrong formatted tag \"" + minecraftFormattedTag + "\"!");
+
+        File directory = inFile;
+        while(!(directory = directory.getParentFile()).getName().equalsIgnoreCase("data"));
+
+        return new File(directory, splitTag[0] + Utils.fileSeparator + "functions" + Utils.fileSeparator
+                + splitTag[1].replace("/", Utils.fileSeparator) + ".mcfunction");
+    }
+
     /**
      * Adds value to the Minecraft tag
      * @param outFile Out file
@@ -56,13 +66,13 @@ public class DatapackUtils {
      */
     public static void addValueToTag(File outFile, String minecraftFormattedTag, String category, String value) throws Exception {
         String[] splitTag = minecraftFormattedTag.split(":");
-        if(splitTag.length != 2) throw new Exception("Illegal tag!");
+        if(splitTag.length != 2) throw new BuildException("Illegal tag \"" + minecraftFormattedTag + "\"!");
 
         File directory = outFile;
         while(!(directory = directory.getParentFile()).getName().equalsIgnoreCase("data"));
 
-        File tagFile = new File(directory, splitTag[0] + Utils.fileSeparator + "tags" + Utils.fileSeparator + category +
-                Utils.fileSeparator + splitTag[1].replace("/", Utils.fileSeparator) + ".json");
+        File tagFile = new File(directory, splitTag[0] + Utils.fileSeparator + "tags" + Utils.fileSeparator
+                + category + Utils.fileSeparator + splitTag[1].replace("/", Utils.fileSeparator) + ".json");
 
         tagFile.getParentFile().mkdirs();
         if(tagFile.createNewFile()) {
@@ -72,10 +82,23 @@ public class DatapackUtils {
             return;
         }
 
-        String content = Files.readString(tagFile.toPath());
+        Object rawJson = JSONValue.parse(new FileReader(tagFile));
+        if(!(rawJson instanceof JSONObject))
+            throw new BuildException("Tag \"" + minecraftFormattedTag + "\" is wrongly configured!");
 
-        JSONObject jsonObject = (JSONObject) JSONValue.parse(content);
-        JSONArray values = (JSONArray) jsonObject.get("values");
+        JSONObject jsonObject = (JSONObject) rawJson;
+
+        Object rawValues = jsonObject.get("values");
+        JSONArray values;
+        if(rawValues == null) {
+            values = new JSONArray();
+        }
+        else {
+            if(!(rawValues instanceof JSONArray))
+                throw new BuildException("Tag \"" + minecraftFormattedTag + "\" is wrongly configured!");
+
+            values = (JSONArray) rawValues;
+        }
 
         if(values.contains(value)) return;
 
@@ -98,14 +121,16 @@ public class DatapackUtils {
      * @throws IOException
      */
     public static String createAnonymousFunction(File outFile, String anonymousFunctionContent) throws IOException {
+        File anonymousFile = new File(outFile.getParentFile(),
+                outFile.getName().substring(0, outFile.getName().length() - 11)
+                        + anonymousFunctionContent.hashCode() + ".mcfunction");
 
-        File anonymousFile = new File(outFile.getParentFile(), outFile.getName().substring(0, outFile.getName().length() - 11) + anonymousFunctionContent.hashCode() + ".mcfunction");
         OutputStream outputStream = new FileOutputStream(anonymousFile);
         outputStream.write(anonymousFunctionContent.getBytes(StandardCharsets.UTF_8));
         outputStream.close();
 
         BuildSubcommand.addAnonymousFunction(anonymousFile);
 
-        return getFunctionMinecraftFormattedName(anonymousFile);
+        return getFunctionName(anonymousFile);
     }
 }

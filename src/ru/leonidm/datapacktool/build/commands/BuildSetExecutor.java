@@ -2,19 +2,21 @@ package ru.leonidm.datapacktool.build.commands;
 
 import ru.leonidm.datapacktool.Messages;
 import ru.leonidm.datapacktool.entities.BuildCommandExecutor;
-import ru.leonidm.datapacktool.events.BuildListener;
-import ru.leonidm.datapacktool.events.EventHandler;
-import ru.leonidm.datapacktool.events.FileParsedEvent;
-import ru.leonidm.datapacktool.events.LineParsedEvent;
+import ru.leonidm.datapacktool.entities.BuildException;
+import ru.leonidm.datapacktool.entities.Pair;
+import ru.leonidm.datapacktool.events.*;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
 
     private final static Map<String, String> changeFromTo = new HashMap<>();
+    private final Pattern varPattern = Pattern.compile("^%[^ ]{1,1000}%$");
+
+    protected final static Set<Pair<String, Integer>> warns = new HashSet<>();
 
     @Override
     public void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent, File inFile, File outFile) throws Exception {
@@ -23,7 +25,7 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
 
     protected void execute(List<String> args, Map<String, String> changeFromTo) throws Exception {
         if(args.size() == 0) {
-            throw new Exception(Messages.ILLEGAL_AMOUNT_OF_ARGS);
+            throw new BuildException(Messages.ILLEGAL_AMOUNT_OF_ARGS);
         }
 
         if(args.size() == 1) {
@@ -38,26 +40,51 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
         args.remove(0);
         String value = String.join(" ", args);
 
-        changeFromTo.put(key, value);
+        changeFromTo.put(key.toLowerCase(), value);
     }
 
     @EventHandler
-    public void onLinePreParse(LineParsedEvent event) {
-        onLinePreParse(event, changeFromTo);
+    public void onLineParsed(LineParsedEvent event) {
+        onLineParsed(event, changeFromTo);
     }
 
-    protected void onLinePreParse(LineParsedEvent event, Map<String, String> changeFromTo) {
+    protected void onLineParsed(LineParsedEvent event, Map<String, String> changeFromTo) {
         String content = event.getContent();
 
-        for(Map.Entry<String, String> entry : changeFromTo.entrySet()) {
-            content = content.replace(entry.getKey(), entry.getValue());
+        String[] entries = content.split("((?<=(?:%[^ ]{1,1000}%))|(?=(?:%[^ ]{1,1000}%)))");
+        StringBuilder editedContent = new StringBuilder();
+
+        int lineNumber = event.getLineNumber();
+
+        for(String entry : entries) {
+            Matcher matcher = varPattern.matcher(entry);
+            if(!matcher.matches()) {
+                editedContent.append(entry);
+                continue;
+            }
+
+            String value = changeFromTo.get(entry.toLowerCase());
+            if(value == null) {
+                warns.add(new Pair<>(entry, lineNumber));
+                editedContent.append(entry);
+                continue;
+            }
+
+            editedContent.append(value);
+            warns.remove(new Pair<>(entry, lineNumber));
         }
 
-        event.setContent(content);
+        event.setContent(editedContent.toString());
     }
 
     @EventHandler
-    public void onFileParsed(FileParsedEvent event) {
-        changeFromTo.clear();
+    private void onFileParsed(FileParsedEvent event) {
+        if(event.getFileType() == FileParsedEvent.FileType.SOURCE) changeFromTo.clear();
+
+        for(Pair<String, Integer> warn : warns) {
+            System.out.println("[WARN] [line:" + warn.getRight() + "] Variable \"" + warn.getLeft() + "\" is unset!");
+        }
+
+        warns.clear();
     }
 }

@@ -5,6 +5,7 @@ import ru.leonidm.datapacktool.Messages;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class BuildParameter {
 
@@ -22,14 +23,15 @@ public class BuildParameter {
         Setting<?> setting = settings.get(Setting.Type.ARGS_AMOUNT);
 
         if(setting != null) {
-            if(!((Setting<List<Integer>>) setting).getValue().contains(args.size())) {
-                throw new Exception(Messages.ILLEGAL_AMOUNT_OF_ARGS);
+            if(!((Setting<Set<Integer>>) setting).getValue().contains(args.size())) {
+                throw new BuildException(Messages.ILLEGAL_AMOUNT_OF_ARGS);
             }
         }
 
         executor.execute(args, inFile, outFile);
     }
 
+    // TODO: rework, use like in TelegramUtilsM
     public static class Setting<T> {
 
         public static class Type {
@@ -38,7 +40,7 @@ public class BuildParameter {
 
         }
 
-        public static final Setting<List<Integer>> ARGS_AMOUNT = new Setting<>(Type.ARGS_AMOUNT, null);
+        public static final Setting<Set<Integer>> ARGS_AMOUNT = new Setting<>(Type.ARGS_AMOUNT, null);
 
         private final Type type;
         private final T value;

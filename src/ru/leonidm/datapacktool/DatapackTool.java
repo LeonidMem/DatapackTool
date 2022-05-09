@@ -67,11 +67,6 @@ public class DatapackTool {
                 .build());
 
         SubcommandManager.registerCommand(new SubcommandBuilder()
-                .setLabels("config")
-                .setExecutor(new ConfigSubcommand())
-                .build());
-
-        SubcommandManager.registerCommand(new SubcommandBuilder()
                 .setLabels("build")
                 .setExecutor(new BuildSubcommand())
                 .build());
@@ -79,6 +74,11 @@ public class DatapackTool {
         SubcommandManager.registerCommand(new SubcommandBuilder()
                 .setLabels("module")
                 .setExecutor(new ModuleSubcommand())
+                .build());
+
+        SubcommandManager.registerCommand(new SubcommandBuilder()
+                .setLabels("environment", "env")
+                .setExecutor(new EnvironmentSubcommand())
                 .build());
     }
 
@@ -93,7 +93,7 @@ public class DatapackTool {
         CommandManager.registerCommand(new BuildCommandBuilder()
                 .setLabel("var")
                 .setExecutor(new BuildVariableExecutor())
-                .set(BuildCommand.Setting.ARGS_AMOUNT, Arrays.asList(3, 5))
+                .set(BuildCommand.Setting.ARGS_AMOUNT, new HashSet<>(Arrays.asList(3, 5)))
                 .build());
 
         CommandManager.registerCommand(new BuildCommandBuilder()
@@ -113,7 +113,7 @@ public class DatapackTool {
         ParameterManager.registerParameter(new BuildParameterBuilder()
                 .setLabel("tag")
                 .setExecutor(new BuildTagExecutor())
-                .set(BuildParameter.Setting.ARGS_AMOUNT, Collections.singletonList(1))
+                .set(BuildParameter.Setting.ARGS_AMOUNT, Collections.singleton(1))
                 .build());
     }
 }

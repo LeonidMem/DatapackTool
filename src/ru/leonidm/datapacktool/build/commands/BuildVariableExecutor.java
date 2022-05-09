@@ -1,6 +1,7 @@
 package ru.leonidm.datapacktool.build.commands;
 
 import ru.leonidm.datapacktool.entities.BuildCommandExecutor;
+import ru.leonidm.datapacktool.entities.BuildException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public class BuildVariableExecutor implements BuildCommandExecutor {
             try {
                 Integer.parseInt(args.get(2));
             } catch(Exception e) {
-                throw new Exception("Last value must be integer!");
+                throw new BuildException("Last value must be integer!");
             }
 
             outFileBuilder.append("scoreboard players set ")
@@ -32,7 +33,7 @@ public class BuildVariableExecutor implements BuildCommandExecutor {
         if(args.size() == 5) {
 
             if(!mathSigns.contains(args.get(2))) {
-                throw new Exception("Unknown math sign!");
+                throw new BuildException("Unknown math sign!");
             }
 
             outFileBuilder.append("scoreboard players operation ")
