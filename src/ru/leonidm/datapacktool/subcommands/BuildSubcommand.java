@@ -108,17 +108,12 @@ public class BuildSubcommand implements SubcommandExecutor {
             System.out.println("\n{Stage [3/3]} Parsing sources...\n");
             Set<File> files = FileUtils.listFilesRecursively(new File(inPath));
 
-            Set<File> jsonFiles = new HashSet<>();
+            Set<File> resourcesFiles = new HashSet<>();
             Set<File> functionsFiles = new HashSet<>();
 
             for(File file : new ArrayList<>(files)) {
+                // TODO: remove file only from "root/dtool" directory
                 if(file.getParentFile().getName().equals("dtool")) {
-                    files.remove(file);
-                    continue;
-                }
-
-                if(file.getName().endsWith(".json")) {
-                    jsonFiles.add(file);
                     files.remove(file);
                     continue;
                 }
@@ -128,8 +123,12 @@ public class BuildSubcommand implements SubcommandExecutor {
                         functionsFiles.add(file);
                     }
 
-                    files.remove(file);
                 }
+                else {
+                    resourcesFiles.add(file);
+                }
+
+                files.remove(file);
             }
 
             File dtoolInit = new File(dtoolDirectory, "init.mcfunction");
@@ -146,21 +145,13 @@ public class BuildSubcommand implements SubcommandExecutor {
                 if(!minifyOutput) System.out.println();
                 System.out.println("{Stage [3/3]} Parsing resources...\n");
 
-                for(File jsonFile : jsonFiles) {
-                    parseResources(jsonFile, inPath, outPath, minifyOutput);
-                }
-
-                for(File file : files) {
-                    parseResources(file, inPath, outPath, minifyOutput);
+                for(File resource : resourcesFiles) {
+                    parseResources(resource, inPath, outPath, minifyOutput);
                 }
             }
             else {
-                for(File jsonFile : jsonFiles) {
-                    FileUtils.copy(jsonFile, new File(jsonFile.getAbsolutePath().replace(inPath, outPath)));
-                }
-
-                for(File file : files) {
-                    FileUtils.copy(file, new File(file.getAbsolutePath().replace(inPath, outPath)));
+                for(File resourceFile : resourcesFiles) {
+                    FileUtils.copy(resourceFile, new File(resourceFile.getAbsolutePath().replace(inPath, outPath)));
                 }
             }
 
@@ -208,12 +199,15 @@ public class BuildSubcommand implements SubcommandExecutor {
         Path outPath1 = Path.of(inFile.getAbsolutePath().replace(inPath, outPath));
         String content = Files.readString(inPath1, StandardCharsets.UTF_8);
 
+        File outFile = outPath1.toFile();
+        outFile.getParentFile().mkdirs();
+
         // TODO: rewrite
-        FileParsedEvent fileParsedEvent = new FileParsedEvent(inFile, outPath1.toFile(),
+        FileParsedEvent fileParsedEvent = new FileParsedEvent(inFile, outFile,
                 FileParsedEvent.FileType.RESOURCE, content);
         fileParsedEvent.call();
 
-        FileOutputStream outputStream = new FileOutputStream(outPath1.toFile());
+        FileOutputStream outputStream = new FileOutputStream(outFile);
         outputStream.write(fileParsedEvent.getContent().getBytes(StandardCharsets.UTF_8));
         outputStream.close();
     }
