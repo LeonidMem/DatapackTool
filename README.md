@@ -93,7 +93,7 @@ building the project, just know it.
 * `#! var <player1> <scoreboard1> <minecraft operation sign> <player2> <scoreboard2>` - alias for
   `scoreboard players operation <player1> <scoreboard1> <operation sign> <player2> <scoreboard2>`
 
-* `%variable_name%` - get value from the variable with specified name if exists, otherwise, nothing changes.
+* `%variable_name` - get value from the variable with specified name if exists, otherwise, nothing changes.
 Can be used in any context.
 
 ## Other features
