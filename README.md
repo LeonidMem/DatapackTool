@@ -72,6 +72,8 @@ In this case, `test1196742791` is the `anonymous function`. Isn't difficult, yea
 * `#$ tag namespace:path/function_tag_name` will add the function, where this parameter appears, in the functions' tag 
 with the given name.
 
+* `#$ ignore` will ignore tagged file on compilation, but it doesn't spread on extended functions. It's useful where you have "template"-function that don't need to be included in out datapack.
+
 ### Built-in commands *(don't copy `<` and `>` from the commands below, they aren't needed)*:
 * `#! execute <any Minecraft execute conditions> {anonymous function}` - wrap anonymous function in another file and call 
   it from the `execute` command with given conditions.
