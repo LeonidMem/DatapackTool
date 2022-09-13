@@ -3,12 +3,12 @@ package ru.leonidm.datapacktool.utils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import ru.leonidm.datapacktool.entities.BuildException;
+import ru.leonidm.datapacktool.exceptions.BuildException;
 import ru.leonidm.datapacktool.subcommands.BuildSubcommand;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.util.regex.Pattern;
 
 public class DatapackUtils {
 
@@ -30,9 +30,9 @@ public class DatapackUtils {
             outDirectory = outDirectory.getParentFile();
         }
 
-        String regex2 = Utils.fileSeparator + "data" + Utils.fileSeparator + namespace + Utils.fileSeparator + "functions";
+        String regex2 = Utils.regexFileSeparator + "data" + Utils.regexFileSeparator + namespace + Utils.regexFileSeparator + "functions";
 
-        String[] split = file.getParent().split(regex2, 2);
+        String[] split = file.getParent().split(Pattern.quote(regex2), 2);
         String directory;
         if(split.length != 2) directory = "";
         else {
@@ -44,7 +44,7 @@ public class DatapackUtils {
         return namespace + ":" + directory + file.getName().substring(0, file.getName().length() - 11);
     }
 
-    public static File getFunctionFromName(File inFile, String minecraftFormattedTag) throws Exception {
+    public static File getFunctionFromName(File inFile, String minecraftFormattedTag) {
         String[] splitTag = minecraftFormattedTag.split(":");
         if(splitTag.length != 2)
             throw new BuildException("Wrong formatted tag \"" + minecraftFormattedTag + "\"!");

@@ -1,10 +1,12 @@
 package ru.leonidm.datapacktool.entities;
 
+import ru.leonidm.datapacktool.build.parameters.BuildIgnoreExecutor;
 import ru.leonidm.datapacktool.events.FileParsedEvent;
 import ru.leonidm.datapacktool.events.LineParsedEvent;
+import ru.leonidm.datapacktool.exceptions.BuildException;
+import ru.leonidm.datapacktool.exceptions.FileIgnoreException;
 import ru.leonidm.datapacktool.managers.CommandManager;
 import ru.leonidm.datapacktool.managers.ParameterManager;
-import ru.leonidm.datapacktool.subcommands.BuildSubcommand;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -36,7 +38,7 @@ public class McFunction {
         }
 
         FileParsedEvent fileParsedEvent = new FileParsedEvent(inFile, outFile,
-                FileParsedEvent.FileType.SOURCE, this.out.toString());
+                FileParsedEvent.FileType.SOURCE, out.toString());
         fileParsedEvent.call();
         finalContent = fileParsedEvent.getContent();
     }
@@ -103,11 +105,16 @@ public class McFunction {
                     List<String> arguments = new ArrayList<>(Arrays.asList(split).subList(1, split.length));
 
                     executeParameter(parameter, arguments);
-                } catch(Exception e) {
-                    if(e.getCause() != null)
-                        throw new BuildException("[line:" + lineNumber + "] " + e.getCause().getMessage() + "\n> " + line);
+                }
+                catch(FileIgnoreException e) {
+                    throw e;
+                }
+                catch(Exception e) {
+                    Throwable cause = e.getCause();
+                    if(cause != null)
+                        throw new BuildException("[line:" + lineNumber + "] " + cause.getMessage() + "\n> " + line, cause);
 
-                    throw new BuildException("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line);
+                    throw new BuildException("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line, e);
                 }
 
                 return;
@@ -154,11 +161,16 @@ public class McFunction {
             }
 
             executeCommand(command, arguments, anonymousContent == null ? null : anonymousContent.toString());
-        } catch(Exception e) {
-            if(e.getCause() != null)
-                throw new BuildException("[line:" + lineNumber + "] " + e.getCause().getMessage() + "\n> " + line);
+        }
+        catch(FileIgnoreException e) {
+            throw e;
+        }
+        catch(Exception e) {
+            Throwable cause = e.getCause();
+            if(cause != null)
+                throw new BuildException("[line:" + lineNumber + "] " + cause.getMessage() + "\n> " + line, cause);
 
-            throw new BuildException("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line);
+            throw new BuildException("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line, e);
         }
     }
 

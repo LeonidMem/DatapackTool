@@ -6,6 +6,8 @@ import org.json.simple.JSONValue;
 import ru.leonidm.datapacktool.ModuleLoader;
 import ru.leonidm.datapacktool.entities.*;
 import ru.leonidm.datapacktool.events.FileParsedEvent;
+import ru.leonidm.datapacktool.exceptions.BuildException;
+import ru.leonidm.datapacktool.exceptions.FileIgnoreException;
 import ru.leonidm.datapacktool.listeners.ExtendedFunctionListener;
 import ru.leonidm.datapacktool.utils.FileUtils;
 import ru.leonidm.datapacktool.events.FilesParsedEvent;
@@ -19,14 +21,21 @@ import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Watchable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BuildSubcommand implements SubcommandExecutor {
 
     private static final Set<File> anonymousFunctions = new HashSet<>();
+    private static final List<String> warns = new ArrayList<>();
 
     public static void addAnonymousFunction(File anonymousFunction) {
         anonymousFunctions.add(anonymousFunction);
+    }
+
+    public static void addWarn(String warnMessage) {
+        warns.add(warnMessage);
     }
 
     @Override
@@ -70,10 +79,10 @@ public class BuildSubcommand implements SubcommandExecutor {
                 outPath = JSONUtils.getObject(jsonObject, "out", "dtool/build.json", String.class);
 
                 if(outPath.contains("/")) {
-                    outPath = outPath.replace("/", Utils.getFileSeparator());
+                    outPath = outPath.replace("/", Utils.fileSeparator);
                 }
                 else {
-                    outPath = outPath.replace("\\", Utils.getFileSeparator());
+                    outPath = outPath.replace("\\", Utils.fileSeparator);
                 }
 
                 JSONArray jsonModules = JSONUtils.getArrayNullable(jsonObject, "modules", "dtool/build.json");
@@ -103,6 +112,7 @@ public class BuildSubcommand implements SubcommandExecutor {
                 }
             }
 
+            // TODO: check if sources are going to be deleted
             FileUtils.deleteFilesRecursively(new File(outPath));
 
             System.out.println("\n{Stage [3/3]} Parsing sources...\n");
@@ -166,6 +176,15 @@ public class BuildSubcommand implements SubcommandExecutor {
 
             if(!minifyOutput) System.out.println();
             System.out.println("=====\nSuccessfully built in " + (double) (endMillis - startMillis) / 1000 + " sec.!\n");
+
+            if(!warns.isEmpty()) {
+                System.out.println("\n[!] Got " + warns.size() + " warns:\n");
+                for(String warn : warns) {
+                    System.out.println("> " + warn);
+                }
+                System.out.println();
+            }
+
         } catch(BuildException e) {
             if(!minifyOutput) System.err.println();
             System.err.println("=====");
@@ -184,12 +203,17 @@ public class BuildSubcommand implements SubcommandExecutor {
         for(File file : new ArrayList<>(files)) {
             File outFile = new File(file.getAbsolutePath().replace(inPath, outPath));
 
-            McFunction mcFunction = new McFunction(file, outFile);
-            mcFunction.parse(minifyOutput);
-            mcFunction.save();
+            try {
+                McFunction mcFunction = new McFunction(file, outFile);
+                mcFunction.parse(minifyOutput);
+                mcFunction.save();
 
-            files.remove(file);
-            parseFiles(inPath, outPath, anonymousFunctions, minifyOutput);
+                files.remove(file);
+                parseFiles(inPath, outPath, anonymousFunctions, minifyOutput);
+            }
+            catch(FileIgnoreException ignored) {
+
+            }
         }
     }
 

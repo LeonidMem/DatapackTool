@@ -1,5 +1,7 @@
 package ru.leonidm.datapacktool.entities;
 
+import ru.leonidm.datapacktool.exceptions.BuildException;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;

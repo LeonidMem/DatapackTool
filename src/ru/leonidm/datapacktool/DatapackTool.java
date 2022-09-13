@@ -4,6 +4,7 @@ import ru.leonidm.datapacktool.build.commands.BuildExecuteExecutor;
 import ru.leonidm.datapacktool.build.commands.BuildGlobalSetExecutor;
 import ru.leonidm.datapacktool.build.commands.BuildSetExecutor;
 import ru.leonidm.datapacktool.build.commands.BuildVariableExecutor;
+import ru.leonidm.datapacktool.build.parameters.BuildIgnoreExecutor;
 import ru.leonidm.datapacktool.build.parameters.BuildTagExecutor;
 import ru.leonidm.datapacktool.subcommands.*;
 import ru.leonidm.datapacktool.entities.*;
@@ -114,6 +115,12 @@ public class DatapackTool {
                 .setLabel("tag")
                 .setExecutor(new BuildTagExecutor())
                 .set(BuildParameter.Setting.ARGS_AMOUNT, Collections.singleton(1))
+                .build());
+
+        ParameterManager.registerParameter(new BuildParameterBuilder()
+                .setLabel("ignore")
+                .setExecutor(new BuildIgnoreExecutor())
+                .set(BuildParameter.Setting.ARGS_AMOUNT, Collections.singleton(0))
                 .build());
     }
 }

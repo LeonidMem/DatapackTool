@@ -1,7 +1,7 @@
 package ru.leonidm.datapacktool.build.commands;
 
 import ru.leonidm.datapacktool.entities.BuildCommandExecutor;
-import ru.leonidm.datapacktool.entities.BuildException;
+import ru.leonidm.datapacktool.exceptions.BuildException;
 
 import java.io.File;
 import java.util.*;

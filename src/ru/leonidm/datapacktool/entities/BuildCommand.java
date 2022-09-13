@@ -1,6 +1,7 @@
 package ru.leonidm.datapacktool.entities;
 
 import ru.leonidm.datapacktool.Messages;
+import ru.leonidm.datapacktool.exceptions.BuildException;
 
 import java.io.File;
 import java.util.List;

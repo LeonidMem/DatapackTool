@@ -1,6 +1,6 @@
 package ru.leonidm.datapacktool.listeners;
 
-import ru.leonidm.datapacktool.entities.BuildException;
+import ru.leonidm.datapacktool.exceptions.BuildException;
 import ru.leonidm.datapacktool.events.BuildListener;
 import ru.leonidm.datapacktool.events.EventHandler;
 import ru.leonidm.datapacktool.events.LineParsedEvent;
@@ -9,6 +9,7 @@ import ru.leonidm.datapacktool.utils.DatapackUtils;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -34,8 +35,6 @@ public class ExtendedFunctionListener implements BuildListener {
 
         String functionName = matcher.group(1);
         File functionFile = DatapackUtils.getFunctionFromName(event.getInFile(), functionName);
-        if(functionFile == null)
-            throw new BuildException("Can't find function \"" + functionName + "\"!");
 
         if(!functionFile.exists())
             throw new BuildException("Function \"" + functionName + "\" doesn't exist!");
@@ -74,6 +73,9 @@ public class ExtendedFunctionListener implements BuildListener {
         }
 
         functionContent = functionContent.replace("\\%", "%");
+
+        // TODO: fix normally
+        functionContent = functionContent.replaceAll("(|#)\\$\\s*ignore\\s*", "");
 
         String newFunctionName = DatapackUtils.createAnonymousFunction(event.getOutFile(), functionContent);
 

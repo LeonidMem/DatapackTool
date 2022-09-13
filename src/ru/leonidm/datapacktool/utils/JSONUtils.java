@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import ru.leonidm.datapacktool.entities.BuildException;
+import ru.leonidm.datapacktool.exceptions.BuildException;
 
 public class JSONUtils {
 

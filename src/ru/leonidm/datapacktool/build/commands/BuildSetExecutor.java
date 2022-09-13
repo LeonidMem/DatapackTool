@@ -2,9 +2,11 @@ package ru.leonidm.datapacktool.build.commands;
 
 import ru.leonidm.datapacktool.Messages;
 import ru.leonidm.datapacktool.entities.BuildCommandExecutor;
-import ru.leonidm.datapacktool.entities.BuildException;
+import ru.leonidm.datapacktool.entities.McFunction;
+import ru.leonidm.datapacktool.exceptions.BuildException;
 import ru.leonidm.datapacktool.entities.Pair;
 import ru.leonidm.datapacktool.events.*;
+import ru.leonidm.datapacktool.subcommands.BuildSubcommand;
 
 import java.io.File;
 import java.util.*;
@@ -107,7 +109,8 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
 
         for(Pair<String, Integer> warn : warns.parallelStream().sorted(Comparator.comparingInt(Pair::getRight))
                 .collect(Collectors.toList())) {
-            System.out.println("[WARN] [line:" + warn.getRight() + "] Variable \"" + warn.getLeft() + "\" is unset!");
+            BuildSubcommand.addWarn("[file: " + event.getOutFile().getAbsolutePath() + " | line:" + warn.getRight() +"] " +
+                    "Variable \"" + warn.getLeft() + "\" is unset!");
         }
 
         warns.clear();

@@ -3,10 +3,12 @@ package ru.leonidm.datapacktool.utils;
 import ru.leonidm.datapacktool.entities.Subcommand;
 import ru.leonidm.datapacktool.managers.SubcommandManager;
 
+import java.util.regex.Pattern;
+
 public class Utils {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-    static final String fileSeparator = isWindows() ? "\\": "/";
-    private static final String regexFileSeparator = fileSeparator.replace("\\", "\\\\");
+    public static final String fileSeparator = isWindows() ? "\\": "/";
+    public static final String regexFileSeparator = Pattern.quote(fileSeparator);
 
     /**
      * @return True if current OS is Windows
