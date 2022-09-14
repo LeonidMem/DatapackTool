@@ -1,3 +1,6 @@
+# Ignore this file on compilation, so there won't be 'example:raw_function' in compiled datapack
+#$ ignore
+
 # The first argument is "Single"
 say %0
 
