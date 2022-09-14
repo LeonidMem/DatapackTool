@@ -125,6 +125,8 @@ public class DatapackUtils {
                 outFile.getName().substring(0, outFile.getName().length() - 11)
                         + anonymousFunctionContent.hashCode() + ".mcfunction");
 
+        anonymousFile.mkdirs();
+
         OutputStream outputStream = new FileOutputStream(anonymousFile);
         outputStream.write(anonymousFunctionContent.getBytes(StandardCharsets.UTF_8));
         outputStream.close();
