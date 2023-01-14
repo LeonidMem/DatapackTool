@@ -12,7 +12,7 @@ public class InstallSubcommand implements SubcommandExecutor {
 
     @Override
     public void run(List<String> args, List<String> keys) {
-        if(args.size() != 1) {
+        if (args.size() != 1) {
             exit();
             return;
         }
@@ -21,12 +21,12 @@ public class InstallSubcommand implements SubcommandExecutor {
         File directory;
         try {
             path = args.get(0);
-            if(!path.endsWith("/") && !path.endsWith("\\")) {
+            if (!path.endsWith("/") && !path.endsWith("\\")) {
                 path += Utils.getFileSeparator();
             }
             directory = new File(path);
             directory.mkdirs();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }
@@ -34,10 +34,10 @@ public class InstallSubcommand implements SubcommandExecutor {
         boolean installed = false;
 
         try {
-            if(Utils.isWindows()) {
+            if (Utils.isWindows()) {
                 String outVariablePath = path.substring(0, path.length() - 1);
                 String pathEnv = System.getenv("Path");
-                if(!pathEnv.contains(outVariablePath)) {
+                if (!pathEnv.contains(outVariablePath)) {
                     pathEnv = pathEnv + ";" + outVariablePath;
                     pathEnv.replace(";;", ";");
 
@@ -49,9 +49,9 @@ public class InstallSubcommand implements SubcommandExecutor {
                 }
 
                 String dtoolPath = System.getenv("DToolPath");
-                if(dtoolPath == null || !dtoolPath.equals(outVariablePath)) {
+                if (dtoolPath == null || !dtoolPath.equals(outVariablePath)) {
 
-                    if(dtoolPath != null) {
+                    if (dtoolPath != null) {
                         System.out.println("Removing old directory from %Path%...");
                         pathEnv = pathEnv.replaceFirst(dtoolPath.replace("\\", "\\\\"), "");
                         pathEnv.replace(";;", ";");
@@ -68,8 +68,7 @@ public class InstallSubcommand implements SubcommandExecutor {
 
                     printError(p);
                 }
-            }
-            else {
+            } else {
                 // TODO: linux support
                 System.out.println("Changing $PATH...");
                 Process p = Runtime.getRuntime().exec("export PATH=\"$HOME/bin:$PATH\"");
@@ -80,7 +79,7 @@ public class InstallSubcommand implements SubcommandExecutor {
             FileUtils.copy(directory, "DatapackTool.jar");
             FileUtils.copy(directory, "dtool.bat");
 
-            if(Utils.isWindows()) {
+            if (Utils.isWindows()) {
                 System.out.println("Killing explorer.exe so variables will be refreshed...");
                 Process p = Runtime.getRuntime().exec("taskkill /f /im explorer.exe");
                 p.waitFor();
@@ -94,11 +93,11 @@ public class InstallSubcommand implements SubcommandExecutor {
 
             installed = true;
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if(!installed) {
+        if (!installed) {
             System.out.println("Something went wrong... Installation was cancelled");
         }
         Scanner scanner = new Scanner(System.in);
@@ -116,7 +115,7 @@ public class InstallSubcommand implements SubcommandExecutor {
         BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
 
         String line;
-        while((line = reader.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
             System.out.println(line);
         }
     }

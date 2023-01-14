@@ -16,8 +16,8 @@ public class SubcommandBuilder {
     }
 
     public Subcommand build() {
-        if(labels == null) throw new IllegalArgumentException("Labels is null!");
-        if(executor == null) throw new IllegalArgumentException("Executor is null!");
+        if (labels == null) throw new IllegalArgumentException("Labels is null!");
+        if (executor == null) throw new IllegalArgumentException("Executor is null!");
         return new Subcommand(labels, executor);
     }
 }

@@ -23,7 +23,7 @@ public class DatapackTool {
 
         registerSubcommands();
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             ModuleLoader.loadModules(false);
 
             System.out.println();
@@ -31,10 +31,10 @@ public class DatapackTool {
             return;
         }
 
-        if((command = SubcommandManager.getSubcommand(args[0])) == null) {
+        if ((command = SubcommandManager.getSubcommand(args[0])) == null) {
             ModuleLoader.loadModules(false);
 
-            if((command = SubcommandManager.getSubcommand(args[0])) == null) {
+            if ((command = SubcommandManager.getSubcommand(args[0])) == null) {
                 System.out.println();
                 Utils.printHelp();
                 return;
@@ -47,8 +47,8 @@ public class DatapackTool {
         List<String> outArgs = new ArrayList<>();
         List<String> outKeys = new ArrayList<>();
 
-        for(String string : Arrays.copyOfRange(args, 1, args.length)) {
-            if(string.startsWith("-")) outKeys.add(string);
+        for (String string : Arrays.copyOfRange(args, 1, args.length)) {
+            if (string.startsWith("-")) outKeys.add(string);
             else outArgs.add(string);
         }
 

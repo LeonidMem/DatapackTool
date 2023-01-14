@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Utils {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-    public static final String fileSeparator = isWindows() ? "\\": "/";
+    public static final String fileSeparator = isWindows() ? "\\" : "/";
     public static final String regexFileSeparator = Pattern.quote(fileSeparator);
 
     /**
@@ -26,8 +26,8 @@ public class Utils {
 
     public static void printHelp() {
         System.out.println("DatapackTool's subcommands:");
-        for(Subcommand command : SubcommandManager.getSubcommands()) {
-            if(command.getInfo() == null) continue;
+        for (Subcommand command : SubcommandManager.getSubcommands()) {
+            if (command.getInfo() == null) continue;
             System.out.println();
             System.out.println(command.getInfo());
         }

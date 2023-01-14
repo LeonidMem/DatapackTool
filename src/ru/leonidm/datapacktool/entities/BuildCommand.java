@@ -23,25 +23,24 @@ public class BuildCommand {
     public void execute(StringBuilder outFileBuilder, List<String> args, String anonymousFunctionContent,
                         File inFile, File outFile) throws Exception {
         Setting<?> setting = settings.get(Setting.Type.ARGS_AMOUNT);
-        if(setting != null) {
-            if(!((Setting<Set<Integer>>) setting).getValue().contains(args.size())) {
+        if (setting != null) {
+            if (!((Setting<Set<Integer>>) setting).getValue().contains(args.size())) {
                 throw new BuildException(Messages.ILLEGAL_AMOUNT_OF_ARGS);
             }
         }
 
-        if(anonymousFunctionContent != null) {
+        if (anonymousFunctionContent != null) {
             setting = settings.get(Setting.Type.TAKE_ANONYMOUS_FUNCTION_AS_ARG);
 
-            if(setting != null && !((Setting<Boolean>) setting).getValue()) {
+            if (setting != null && !((Setting<Boolean>) setting).getValue()) {
                 throw new BuildException("This command can't be used with anonymous function!");
             }
 
             boolean hasAnonymousFunction = ((Setting<Boolean>) setting).getValue();
-        }
-        else {
+        } else {
             setting = settings.get(Setting.Type.THERE_MUST_BE_ANONYMOUS_FUNCTION);
 
-            if(setting != null && ((Setting<Boolean>) setting).getValue()) {
+            if (setting != null && ((Setting<Boolean>) setting).getValue()) {
                 throw new BuildException("You must specify anonymous function as argument here!");
             }
         }

@@ -16,24 +16,25 @@ public class EventManager {
 
     /**
      * Register listener
+     *
      * @param listener
      */
     public static void registerListener(BuildListener listener) {
         try {
-            for(Method method : listener.getClass().getDeclaredMethods()) {
+            for (Method method : listener.getClass().getDeclaredMethods()) {
                 method.setAccessible(true);
 
                 EventHandler eventHandler = method.getAnnotation(EventHandler.class);
-                if(eventHandler == null) continue;
+                if (eventHandler == null) continue;
 
                 Class<?>[] parameterTypes = method.getParameterTypes();
-                if(parameterTypes.length != 1) {
+                if (parameterTypes.length != 1) {
                     System.err.println("[EventManager -> " + listener.getClass().getName() + "#" + method.getName() + "] There must be only one parameter!");
                     continue;
                 }
 
                 Class<?> parameterType = parameterTypes[0];
-                if(!Event.class.isAssignableFrom(parameterType)) {
+                if (!Event.class.isAssignableFrom(parameterType)) {
                     System.err.println("[EventManager -> " + listener.getClass().getName() + "#" + method.getName() + "] Type of the first parameter must extend from Event!");
                     continue;
                 }
@@ -41,19 +42,20 @@ public class EventManager {
                 methods.computeIfAbsent((Class<? extends Event>) parameterType, k -> new HashSet<>()).add(method);
                 listeners.put(method, listener);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Notify all listeners about this event
+     *
      * @param event
      */
     public static void callEvent(Event event) throws Exception {
         Set<Method> methods = EventManager.methods.get(event.getClass());
-        if(methods == null) return;
-        for(Method method : methods) {
+        if (methods == null) return;
+        for (Method method : methods) {
             BuildListener listener = listeners.get(method);
             method.invoke(listener, event);
         }

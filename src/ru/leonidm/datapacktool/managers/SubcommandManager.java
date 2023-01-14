@@ -14,10 +14,11 @@ public class SubcommandManager {
 
     /**
      * Register subcommand
+     *
      * @param subcommand
      */
     public static void registerCommand(Subcommand subcommand) {
-        for(String label : subcommand.getLabels()) {
+        for (String label : subcommand.getLabels()) {
             stringToCommand.put(label, subcommand);
         }
         commands.add(subcommand);

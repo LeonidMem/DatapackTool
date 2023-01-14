@@ -31,12 +31,12 @@ public class ExtendedFunctionListener implements BuildListener {
         String content = event.getContent();
 
         Matcher matcher = extendedFunctionPattern.matcher(content);
-        if(!matcher.matches()) return;
+        if (!matcher.matches()) return;
 
         String functionName = matcher.group(1);
         File functionFile = DatapackUtils.getFunctionFromName(event.getInFile(), functionName);
 
-        if(!functionFile.exists())
+        if (!functionFile.exists())
             throw new BuildException("Function \"" + functionName + "\" doesn't exist!");
 
         String match = matcher.group(2);
@@ -45,14 +45,13 @@ public class ExtendedFunctionListener implements BuildListener {
         Map<Integer, String> args = new HashMap<>();
 
         int index = 0;
-        while(matcher1.find()) {
+        while (matcher1.find()) {
             String arg = matcher1.group(0);
-            if(arg.equals(" ")) continue;
+            if (arg.equals(" ")) continue;
 
-            if(arg.charAt(0) == '"' && arg.charAt(arg.length() - 1) == '"') {
+            if (arg.charAt(0) == '"' && arg.charAt(arg.length() - 1) == '"') {
                 args.put(index++, arg.substring(1, arg.length() - 1));
-            }
-            else {
+            } else {
                 args.put(index++, arg);
             }
         }
@@ -60,13 +59,13 @@ public class ExtendedFunctionListener implements BuildListener {
         String functionContent = Files.readString(Path.of(functionFile.getAbsolutePath()));
 
         // TODO: use RegEx
-        for(Map.Entry<Integer, String> entry : args.entrySet()) {
+        for (Map.Entry<Integer, String> entry : args.entrySet()) {
             functionContent = functionContent.replace("%" + entry.getKey(), entry.getValue());
         }
 
         Matcher matcher2 = argVarPattern.matcher(functionContent);
-        while(matcher2.find()) {
-            if(!matcher2.group(0).startsWith(" ")) continue;
+        while (matcher2.find()) {
+            if (!matcher2.group(0).startsWith(" ")) continue;
 
             throw new BuildException("Can't fill argument \"" + matcher2.group(0).substring(1)
                     + "\" in function \"" + functionName + "\"!");

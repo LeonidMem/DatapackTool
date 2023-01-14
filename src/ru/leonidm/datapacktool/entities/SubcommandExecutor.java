@@ -12,6 +12,6 @@ public interface SubcommandExecutor {
         System.out.println("Incorrect arguments!");
 
         String info = info();
-        if(info != null) System.out.println(info);
+        if (info != null) System.out.println(info);
     }
 }

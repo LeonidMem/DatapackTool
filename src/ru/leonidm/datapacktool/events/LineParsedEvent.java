@@ -43,6 +43,7 @@ public class LineParsedEvent extends Event {
 
     /**
      * Change content which will be written in the out file
+     *
      * @param content
      */
     public void setContent(@NotNull String content) {

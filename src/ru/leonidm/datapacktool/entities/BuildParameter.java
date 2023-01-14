@@ -23,8 +23,8 @@ public class BuildParameter {
     public void execute(List<String> args, File inFile, File outFile) throws Exception {
         Setting<?> setting = settings.get(Setting.Type.ARGS_AMOUNT);
 
-        if(setting != null) {
-            if(!((Setting<Set<Integer>>) setting).getValue().contains(args.size())) {
+        if (setting != null) {
+            if (!((Setting<Set<Integer>>) setting).getValue().contains(args.size())) {
                 throw new BuildException(Messages.ILLEGAL_AMOUNT_OF_ARGS);
             }
         }

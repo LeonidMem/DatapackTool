@@ -29,7 +29,7 @@ public class BuildGlobalSetExecutor extends BuildSetExecutor {
 
     @EventHandler
     private void onFileParsed(FileParsedEvent event) throws IOException {
-        if(event.getFileType() != FileParsedEvent.FileType.RESOURCE) return;
+        if (event.getFileType() != FileParsedEvent.FileType.RESOURCE) return;
 
         File inFile = event.getInFile();
         Path inPath = Path.of(inFile.getAbsolutePath());

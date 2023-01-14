@@ -31,9 +31,9 @@ public class McFunction {
         InputStream inputStream = new FileInputStream(inFile);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-        if(!minifyOutput) System.out.println("Parsing " + inFile.getAbsolutePath() + "...");
+        if (!minifyOutput) System.out.println("Parsing " + inFile.getAbsolutePath() + "...");
 
-        while(reader.ready()) {
+        while (reader.ready()) {
             parseLine(reader);
         }
 
@@ -44,7 +44,7 @@ public class McFunction {
     }
 
     public void save() throws Exception {
-        if(finalContent == null) throw new BuildException("Function wasn't parsed!");
+        if (finalContent == null) throw new BuildException("Function wasn't parsed!");
 
         outFile.getParentFile().mkdirs();
         OutputStream outputStream = new FileOutputStream(outFile);
@@ -59,14 +59,12 @@ public class McFunction {
         try {
             boolean isCommand;
 
-            if(line.startsWith("!") || line.startsWith("#!")) {
+            if (line.startsWith("!") || line.startsWith("#!")) {
                 isCommand = true;
-            }
-            else if(line.startsWith("$") || line.startsWith("#$")) {
+            } else if (line.startsWith("$") || line.startsWith("#$")) {
                 isCommand = false;
-            }
-            else {
-                if(line.startsWith("#%")) {
+            } else {
+                if (line.startsWith("#%")) {
                     line = line.substring(2).strip();
                 }
 
@@ -75,7 +73,7 @@ public class McFunction {
 
                 line = lineParsedEvent.getContent();
 
-                if(!line.isBlank() && !line.startsWith("#")) {
+                if (!line.isBlank() && !line.startsWith("#")) {
                     out.append(line).append('\n');
                 }
 
@@ -84,7 +82,7 @@ public class McFunction {
 
             line = line.substring(line.startsWith("#") ? 2 : 1).strip();
 
-            while(line.contains("  ")) {
+            while (line.contains("  ")) {
                 line = line.replace("  ", " ");
             }
 
@@ -94,10 +92,10 @@ public class McFunction {
 
             String[] split = line.split(" ");
 
-            if(!isCommand) {
+            if (!isCommand) {
                 BuildParameter parameter = ParameterManager.getParameter(split[0]);
 
-                if(parameter == null) {
+                if (parameter == null) {
                     throw new BuildException("[line:" + lineNumber + "] Unknown parameter!\n> " + line);
                 }
 
@@ -105,13 +103,11 @@ public class McFunction {
                     List<String> arguments = new ArrayList<>(Arrays.asList(split).subList(1, split.length));
 
                     executeParameter(parameter, arguments);
-                }
-                catch(FileIgnoreException e) {
+                } catch (FileIgnoreException e) {
                     throw e;
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     Throwable cause = e.getCause();
-                    if(cause != null)
+                    if (cause != null)
                         throw new BuildException("[line:" + lineNumber + "] " + cause.getMessage() + "\n> " + line, cause);
 
                     throw new BuildException("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line, e);
@@ -121,7 +117,7 @@ public class McFunction {
             }
 
             BuildCommand command = CommandManager.getCommand(split[0]);
-            if(command == null) {
+            if (command == null) {
                 throw new BuildException("[line:" + lineNumber + "] Unknown command!\n> " + line);
             }
 
@@ -130,7 +126,7 @@ public class McFunction {
 
             List<String> arguments = new ArrayList<>(Arrays.asList(split).subList(1, split.length));
 
-            if(line.endsWith(" {")) {
+            if (line.endsWith(" {")) {
 
                 arguments.remove("{");
 
@@ -140,34 +136,32 @@ public class McFunction {
                 String anonymousLine;
 
                 int figureBracketStack = 0;
-                while((anonymousLine = reader.readLine()) != null) {
+                while ((anonymousLine = reader.readLine()) != null) {
 
                     lineNumber += 1;
 
-                    if((anonymousLine = anonymousLine.strip()).endsWith(" {")) {
+                    if ((anonymousLine = anonymousLine.strip()).endsWith(" {")) {
                         figureBracketStack += 1;
                     }
 
-                    if((anonymousLine = anonymousLine.strip()).equals("#! }") || anonymousLine.equals("! }")) {
-                        if(figureBracketStack-- == 0) break;
+                    if ((anonymousLine = anonymousLine.strip()).equals("#! }") || anonymousLine.equals("! }")) {
+                        if (figureBracketStack-- == 0) break;
                     }
 
                     anonymousContent.append(anonymousLine).append('\n');
                 }
 
-                if(anonymousLine == null) {
+                if (anonymousLine == null) {
                     throw new BuildException("[line:" + anonymousStartLineNumber + "] Anonymous function wasn't closed!\n> " + line);
                 }
             }
 
             executeCommand(command, arguments, anonymousContent == null ? null : anonymousContent.toString());
-        }
-        catch(FileIgnoreException e) {
+        } catch (FileIgnoreException e) {
             throw e;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Throwable cause = e.getCause();
-            if(cause != null)
+            if (cause != null)
                 throw new BuildException("[line:" + lineNumber + "] " + cause.getMessage() + "\n> " + line, cause);
 
             throw new BuildException("[line:" + lineNumber + "] " + e.getMessage() + "\n> " + line, e);

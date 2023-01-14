@@ -29,8 +29,8 @@ public class BuildCommandBuilder {
     }
 
     public BuildCommand build() {
-        if(label == null) throw new IllegalArgumentException("Label is null!");
-        if(executor == null) throw new IllegalArgumentException("Executor is null!");
+        if (label == null) throw new IllegalArgumentException("Label is null!");
+        if (executor == null) throw new IllegalArgumentException("Executor is null!");
         return new BuildCommand(label, executor, settings);
     }
 }

@@ -31,7 +31,7 @@ public class DtoolFunction extends McFunction {
     @Override
     protected void executeCommand(BuildCommand command, List<String> args, String anonymousFunctionContent) throws Exception {
         String label = command.getLabel();
-        if(!allowedCommands.contains(label))
+        if (!allowedCommands.contains(label))
             throw new BuildException("Command \"" + label + "\" can't be used in this DtoolFunction!");
 
         super.executeCommand(command, args, anonymousFunctionContent);

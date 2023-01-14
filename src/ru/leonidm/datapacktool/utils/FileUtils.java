@@ -10,8 +10,9 @@ public class FileUtils {
 
     /**
      * Copies files
+     *
      * @param from File which will be copied
-     * @param to Where to
+     * @param to   Where to
      * @throws IOException
      */
     public static void copy(File from, File to) throws IOException {
@@ -31,8 +32,9 @@ public class FileUtils {
 
     /**
      * Copies files
+     *
      * @param directory Directory where located new file will be
-     * @param name Name of the file to copy in the same directory
+     * @param name      Name of the file to copy in the same directory
      * @throws IOException
      */
     public static void copy(File directory, String name) throws IOException {
@@ -40,7 +42,7 @@ public class FileUtils {
         InputStream resourceInputStream = new FileInputStream(resourceFile);
 
         File outFile = new File(directory, name);
-        if(outFile.exists()) {
+        if (outFile.exists()) {
             outFile.delete();
         }
         outFile = new File(directory, name);
@@ -55,6 +57,7 @@ public class FileUtils {
 
     /**
      * List all files recursively
+     *
      * @param directory Directory
      * @return List of the files
      */
@@ -63,8 +66,8 @@ public class FileUtils {
         Set<File> output = new HashSet<>();
 
         File[] files = directory.listFiles();
-        if(files != null) {
-            for(File f : files) {
+        if (files != null) {
+            for (File f : files) {
                 if (f.isDirectory()) output.addAll(listFilesRecursively(new File(directory, f.getName())));
                 else output.add(f);
             }
@@ -74,17 +77,17 @@ public class FileUtils {
 
     /**
      * Deletes all files recursively
+     *
      * @param directory Directory
      */
     public static void deleteFilesRecursively(File directory) {
         File[] files = directory.listFiles();
-        if(files != null) {
-            for(File file : files) {
-                if(file.isDirectory()) {
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
                     deleteFilesRecursively(file);
                     directory.delete();
-                }
-                else file.delete();
+                } else file.delete();
             }
         }
     }

@@ -11,6 +11,7 @@ public class CommandManager {
 
     /**
      * Register command
+     *
      * @param command
      */
     public static void registerCommand(BuildCommand command) {

@@ -40,7 +40,7 @@ public class BuildSubcommand implements SubcommandExecutor {
 
     @Override
     public void run(List<String> args, List<String> keys) {
-        if(args.size() > 1) {
+        if (args.size() > 1) {
             exit();
             return;
         }
@@ -60,16 +60,16 @@ public class BuildSubcommand implements SubcommandExecutor {
             Set<String> modules = new HashSet<>();
 
             File dtoolBuild = new File(dtoolDirectory, "build.json");
-            if(dtoolBuild.exists()) {
+            if (dtoolBuild.exists()) {
                 Object rawJson = JSONValue.parse(new FileReader(dtoolBuild));
-                if(!(rawJson instanceof JSONObject))
+                if (!(rawJson instanceof JSONObject))
                     throw new BuildException("\"dtool/build.json\" is wrongly configured!");
                 JSONObject jsonObject = (JSONObject) rawJson;
 
                 /* ===== */
 
                 JSONArray jsonArgs = JSONUtils.getArrayNullable(jsonObject, "args", "dtool/build.json");
-                if(jsonArgs != null) {
+                if (jsonArgs != null) {
                     keys.addAll(jsonArgs);
                     minifyOutput = keys.contains("-minify");
                 }
@@ -78,27 +78,24 @@ public class BuildSubcommand implements SubcommandExecutor {
 
                 outPath = JSONUtils.getObject(jsonObject, "out", "dtool/build.json", String.class);
 
-                if(outPath.contains("/")) {
+                if (outPath.contains("/")) {
                     outPath = outPath.replace("/", Utils.fileSeparator);
-                }
-                else {
+                } else {
                     outPath = outPath.replace("\\", Utils.fileSeparator);
                 }
 
                 JSONArray jsonModules = JSONUtils.getArrayNullable(jsonObject, "modules", "dtool/build.json");
-                if(jsonModules != null) {
-                    for(Object rawModule : jsonModules) {
+                if (jsonModules != null) {
+                    for (Object rawModule : jsonModules) {
                         String module = rawModule.toString().toLowerCase();
-                        if(module.endsWith(".jar")) {
+                        if (module.endsWith(".jar")) {
                             modules.add(module);
-                        }
-                        else {
+                        } else {
                             modules.add(module + ".jar");
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 throw new BuildException("DTool's environment isn't initialized! Use \"dtool env init\" to do this!");
             }
 
@@ -106,8 +103,8 @@ public class BuildSubcommand implements SubcommandExecutor {
 
             ModuleLoader.loadModules(!minifyOutput, file -> modules.contains(file.getName().toLowerCase()));
 
-            for(String module : modules) {
-                if(ModuleLoader.getModule(module.replace(".jar", "")) == null) {
+            for (String module : modules) {
+                if (ModuleLoader.getModule(module.replace(".jar", "")) == null) {
                     throw new BuildException("Module \"" + module + "\" isn't loaded!");
                 }
             }
@@ -121,20 +118,19 @@ public class BuildSubcommand implements SubcommandExecutor {
             Set<File> resourcesFiles = new HashSet<>();
             Set<File> functionsFiles = new HashSet<>();
 
-            for(File file : new ArrayList<>(files)) {
+            for (File file : new ArrayList<>(files)) {
                 // TODO: remove file only from "root/dtool" directory
-                if(file.getParentFile().getName().equals("dtool")) {
+                if (file.getParentFile().getName().equals("dtool")) {
                     files.remove(file);
                     continue;
                 }
 
-                if(file.getName().endsWith(".mcfunction")) {
-                    if(!file.getParentFile().equals(dtoolDirectory)) {
+                if (file.getName().endsWith(".mcfunction")) {
+                    if (!file.getParentFile().equals(dtoolDirectory)) {
                         functionsFiles.add(file);
                     }
 
-                }
-                else {
+                } else {
                     resourcesFiles.add(file);
                 }
 
@@ -142,7 +138,7 @@ public class BuildSubcommand implements SubcommandExecutor {
             }
 
             File dtoolInit = new File(dtoolDirectory, "init.mcfunction");
-            if(dtoolInit.exists()) {
+            if (dtoolInit.exists()) {
                 DtoolFunction dtoolFunction = new DtoolFunction(dtoolInit, "globalset");
                 dtoolFunction.parse(true);
             }
@@ -151,16 +147,15 @@ public class BuildSubcommand implements SubcommandExecutor {
 
             parseFiles(inPath, outPath, functionsFiles, minifyOutput);
 
-            if(keys.contains("-pr")) {
-                if(!minifyOutput) System.out.println();
+            if (keys.contains("-pr")) {
+                if (!minifyOutput) System.out.println();
                 System.out.println("{Stage [3/3]} Parsing resources...\n");
 
-                for(File resource : resourcesFiles) {
+                for (File resource : resourcesFiles) {
                     parseResources(resource, inPath, outPath, minifyOutput);
                 }
-            }
-            else {
-                for(File resourceFile : resourcesFiles) {
+            } else {
+                for (File resourceFile : resourcesFiles) {
                     FileUtils.copy(resourceFile, new File(resourceFile.getAbsolutePath().replace(inPath, outPath)));
                 }
             }
@@ -168,31 +163,31 @@ public class BuildSubcommand implements SubcommandExecutor {
             FilesParsedEvent filesParsedEvent = new FilesParsedEvent();
             filesParsedEvent.call();
 
-            if(filesParsedEvent.isParseNewAnonymous()) {
+            if (filesParsedEvent.isParseNewAnonymous()) {
                 parseFiles(inPath, outPath, anonymousFunctions, minifyOutput);
             }
 
-            long endMillis = System.currentTimeMillis() ;
+            long endMillis = System.currentTimeMillis();
 
-            if(!minifyOutput) System.out.println();
+            if (!minifyOutput) System.out.println();
             System.out.println("=====\nSuccessfully built in " + (double) (endMillis - startMillis) / 1000 + " sec.!\n");
 
-            if(!warns.isEmpty()) {
+            if (!warns.isEmpty()) {
                 System.out.println("\n[!] Got " + warns.size() + " warns:\n");
-                for(String warn : warns) {
+                for (String warn : warns) {
                     System.out.println("> " + warn);
                 }
                 System.out.println();
             }
 
-        } catch(BuildException e) {
-            if(!minifyOutput) System.err.println();
+        } catch (BuildException e) {
+            if (!minifyOutput) System.err.println();
             System.err.println("=====");
             System.err.println(e.getMessage());
-            if(keys.contains("-debug")) e.printStackTrace();
+            if (keys.contains("-debug")) e.printStackTrace();
             System.err.println("\nError occurred! Building was cancelled!\n");
-        } catch(Exception e) {
-            if(!minifyOutput) System.err.println();
+        } catch (Exception e) {
+            if (!minifyOutput) System.err.println();
             System.err.println("=====");
             e.printStackTrace();
             System.err.println("\nError occurred! Building was cancelled!\n");
@@ -200,7 +195,7 @@ public class BuildSubcommand implements SubcommandExecutor {
     }
 
     private void parseFiles(String inPath, String outPath, Set<File> files, boolean minifyOutput) throws Exception {
-        for(File file : new ArrayList<>(files)) {
+        for (File file : new ArrayList<>(files)) {
             File outFile = new File(file.getAbsolutePath().replace(inPath, outPath));
 
             try {
@@ -210,8 +205,7 @@ public class BuildSubcommand implements SubcommandExecutor {
 
                 files.remove(file);
                 parseFiles(inPath, outPath, anonymousFunctions, minifyOutput);
-            }
-            catch(FileIgnoreException ignored) {
+            } catch (FileIgnoreException ignored) {
 
             }
         }
@@ -219,7 +213,7 @@ public class BuildSubcommand implements SubcommandExecutor {
 
     private void parseResources(File inFile, String inPath, String outPath, boolean minifyOutput) throws Exception {
         Path inPath1 = Path.of(inFile.getAbsolutePath());
-        if(!minifyOutput) System.out.println("Parsing " + inPath1 + "...");
+        if (!minifyOutput) System.out.println("Parsing " + inPath1 + "...");
         Path outPath1 = Path.of(inFile.getAbsolutePath().replace(inPath, outPath));
         String content = Files.readString(inPath1, StandardCharsets.UTF_8);
 
@@ -239,8 +233,8 @@ public class BuildSubcommand implements SubcommandExecutor {
     @Override
     public String info() {
         return "  build [id] - build project\n" +
-               "    -pr - parse resources\n" +
-               "    -minify - minify output";
+                "    -pr - parse resources\n" +
+                "    -minify - minify output";
     }
 }
 

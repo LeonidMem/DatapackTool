@@ -12,13 +12,13 @@ public class ModuleSubcommand implements SubcommandExecutor {
 
     @Override
     public void run(List<String> args, List<String> keys) {
-        if(args.size() == 0) {
+        if (args.size() == 0) {
             exit();
             return;
         }
 
         try {
-            switch(args.get(0)) {
+            switch (args.get(0)) {
                 case "load":
                     ModuleLoader.loadModules(true);
                     break;
@@ -33,14 +33,14 @@ public class ModuleSubcommand implements SubcommandExecutor {
                     break;
 
                 case "info":
-                    if(args.size() != 2) {
+                    if (args.size() != 2) {
                         exit();
                         return;
                     }
 
                     ModuleLoader.loadModules(keys.contains("-debug"));
                     ModuleLoader.ModuleInfo moduleInfo = ModuleLoader.getModule(args.get(1));
-                    if(moduleInfo == null) {
+                    if (moduleInfo == null) {
                         System.out.println("Unknown module!");
                         return;
                     }
@@ -51,7 +51,7 @@ public class ModuleSubcommand implements SubcommandExecutor {
                     break;
 
                 case "download":
-                    if(args.size() == 1 || args.size() > 3) {
+                    if (args.size() == 1 || args.size() > 3) {
                         exit();
                         return;
                     }
@@ -59,18 +59,17 @@ public class ModuleSubcommand implements SubcommandExecutor {
                     String repository;
                     String moduleName;
 
-                    if(args.size() == 2) {
+                    if (args.size() == 2) {
                         repository = "LeonidMem/DatapackTool-Modules";
                         moduleName = args.get(1);
-                    }
-                    else {
+                    } else {
                         repository = args.get(1);
                         moduleName = args.get(2);
                     }
-                    if(!moduleName.endsWith(".jar")) moduleName += ".jar";
+                    if (!moduleName.endsWith(".jar")) moduleName += ".jar";
 
                     File moduleFile = GitHubUtils.getFile(repository, moduleName);
-                    if(moduleFile == null) {
+                    if (moduleFile == null) {
                         System.out.println("Wrong name of the module or repository! Visit https://github.com/LeonidMem/DatapackTool-Modules to get full list!");
                         break;
                     }
@@ -78,17 +77,16 @@ public class ModuleSubcommand implements SubcommandExecutor {
                     moduleInfo = ModuleLoader.loadModule(moduleFile, keys.contains("-debug"));
 
                     String commitID = GitHubUtils.getLastFileCommitID(repository, moduleName);
-                    if(commitID != null) {
+                    if (commitID != null) {
                         moduleName = moduleName.substring(0, moduleName.length() - 4);
                         ModulesConfig.set(moduleName + "_last_commit", commitID);
                         ModulesConfig.set(moduleName + "_repository", repository);
                         ModulesConfig.save();
                     }
 
-                    if(moduleInfo == null) {
+                    if (moduleInfo == null) {
                         System.out.println("Module was installed, but it works incorrectly...");
-                    }
-                    else {
+                    } else {
                         System.out.println("Installed " + moduleInfo.getName() + " v" + moduleInfo.getVersion() + "!");
                     }
                     break;
@@ -99,7 +97,7 @@ public class ModuleSubcommand implements SubcommandExecutor {
                     List<ModuleLoader.ModuleInfo> modules = ModuleLoader.getModules();
                     ModuleLoader.unloadModules();
 
-                    for(ModuleLoader.ModuleInfo moduleInfo1 : modules) {
+                    for (ModuleLoader.ModuleInfo moduleInfo1 : modules) {
                         System.out.println("Checking for " + moduleInfo1.getName() + "'s updates...");
 
                         moduleName = moduleInfo1.getName();
@@ -108,18 +106,18 @@ public class ModuleSubcommand implements SubcommandExecutor {
                         repository = ModulesConfig.get(moduleName + "_repository");
 
                         commitID = GitHubUtils.getLastFileCommitID(repository, moduleName + ".jar");
-                        if(commitID == null) {
+                        if (commitID == null) {
                             System.out.println("Something went wrong! Skipping it...");
                             continue;
                         }
 
-                        if(commitID.equals(lastCommit)) {
+                        if (commitID.equals(lastCommit)) {
                             System.out.println("This module doesn't have any updates! Skipping it...");
                             continue;
                         }
 
                         moduleFile = GitHubUtils.getFile(repository, moduleName + ".jar");
-                        if(moduleFile == null) {
+                        if (moduleFile == null) {
                             System.out.println("Can't get this module from GitHub! Skipping it...");
                             break;
                         }
@@ -129,10 +127,9 @@ public class ModuleSubcommand implements SubcommandExecutor {
 
                         moduleInfo = ModuleLoader.loadModule(moduleFile, keys.contains("-debug"));
 
-                        if(moduleInfo == null) {
+                        if (moduleInfo == null) {
                             System.out.println("Module was installed, but it works incorrectly...");
-                        }
-                        else {
+                        } else {
                             System.out.println("Updated " + moduleInfo.getName() + " v" + moduleInfo.getVersion() + "!");
                         }
 
@@ -143,7 +140,7 @@ public class ModuleSubcommand implements SubcommandExecutor {
                     exit();
                     break;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -151,15 +148,15 @@ public class ModuleSubcommand implements SubcommandExecutor {
     @Override
     public String info() {
         return "  module:\n" +
-               "    load - load all modules (useful for debug)\n" +
-               "    list - show list of installed modules\n" +
-               "      -debug - show debug information\n" +
-               "    info <name> - module info\n" +
-               "      -debug - show debug information\n" +
-               "    download [repository] <name> - download module from official repository\n" +
-               "      -debug - show debug information\n" +
-               "    update - update all modules\n" +
-               "      -debug - show debug information";
+                "    load - load all modules (useful for debug)\n" +
+                "    list - show list of installed modules\n" +
+                "      -debug - show debug information\n" +
+                "    info <name> - module info\n" +
+                "      -debug - show debug information\n" +
+                "    download [repository] <name> - download module from official repository\n" +
+                "      -debug - show debug information\n" +
+                "    update - update all modules\n" +
+                "      -debug - show debug information";
     }
 }
 

@@ -25,9 +25,9 @@ public class ModuleLoader {
         File modulesDirectory = new File(System.getenv("DToolPath") + Utils.getFileSeparator() + "modules");
         File[] modulesFiles = modulesDirectory.listFiles();
 
-        if(modulesFiles != null) {
-            for(File moduleFile : modulesFiles) {
-                if(!moduleFile.getName().endsWith(".jar") || !loadPredicate.test(moduleFile)) continue;
+        if (modulesFiles != null) {
+            for (File moduleFile : modulesFiles) {
+                if (!moduleFile.getName().endsWith(".jar") || !loadPredicate.test(moduleFile)) continue;
                 loadModule(moduleFile, log);
             }
         }
@@ -38,12 +38,13 @@ public class ModuleLoader {
     }
 
     public static ModuleInfo loadModule(File moduleFile, boolean log) throws Exception {
-        if(log) System.out.println("\nTrying to load " + moduleFile.getName() + "...");
+        if (log) System.out.println("\nTrying to load " + moduleFile.getName() + "...");
 
         ZipFile zipFile = new ZipFile(moduleFile);
         ZipEntry zipEntry = zipFile.getEntry("module-info.ini");
-        if(zipEntry == null) {
-            if(log) System.err.println("Module " + moduleFile.getName() + " doesn't have \"module-info.ini\"! Skipping it...");
+        if (zipEntry == null) {
+            if (log)
+                System.err.println("Module " + moduleFile.getName() + " doesn't have \"module-info.ini\"! Skipping it...");
             return null;
         }
 
@@ -51,18 +52,20 @@ public class ModuleLoader {
 
         String name = iniConfig.get("name");
         String version = iniConfig.get("version");
-        if(name == null || version == null) {
-            if(log) System.err.println("Module " + moduleFile.getName() + " doesn't have defined \"name\" or \"version\" in \"module-info.ini\"! Skipping it...");
+        if (name == null || version == null) {
+            if (log)
+                System.err.println("Module " + moduleFile.getName() + " doesn't have defined \"name\" or \"version\" in \"module-info.ini\"! Skipping it...");
             return null;
         }
 
-        if(modules.containsKey(name)) {
-            if(log) System.err.println("Module \"" + name + "\" can't be loaded, because there is module with the same name! Skipping it...");
+        if (modules.containsKey(name)) {
+            if (log)
+                System.err.println("Module \"" + name + "\" can't be loaded, because there is module with the same name! Skipping it...");
             return null;
         }
 
         URLClassLoader classLoader = new URLClassLoader(
-                new URL[] {moduleFile.toURI().toURL()},
+                new URL[]{moduleFile.toURI().toURL()},
                 DatapackTool.class.getClassLoader()
         );
 
@@ -79,10 +82,10 @@ public class ModuleLoader {
             ModuleInfo moduleInfo = new ModuleInfo(name, version, (String) result);
             modules.put(name.toLowerCase(), moduleInfo);
 
-            if(log) System.out.println("Loaded " + name + "!");
+            if (log) System.out.println("Loaded " + name + "!");
 
             return moduleInfo;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

@@ -11,15 +11,15 @@ public class EnvironmentSubcommand implements SubcommandExecutor {
 
     @Override
     public void run(List<String> args, List<String> keys) {
-        if(args.size() == 0) {
+        if (args.size() == 0) {
             exit();
             return;
         }
 
-        switch(args.get(0).toLowerCase()) {
+        switch (args.get(0).toLowerCase()) {
             case "init":
                 File buildFile = new File("dtool/build.json");
-                if(buildFile.exists()) {
+                if (buildFile.exists()) {
                     System.err.println("Environment is already initialized!");
                     System.err.println();
                     return;
@@ -36,7 +36,7 @@ public class EnvironmentSubcommand implements SubcommandExecutor {
 
                     File initFunction = new File("dtool/init.mcfunction");
                     initFunction.createNewFile();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
 
                     System.err.println("=====");
@@ -57,6 +57,6 @@ public class EnvironmentSubcommand implements SubcommandExecutor {
     @Override
     public String info() {
         return "  environment env:\n" +
-               "    init - initialize DTool's environment";
+                "    init - initialize DTool's environment";
     }
 }

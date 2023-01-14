@@ -26,11 +26,11 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
     }
 
     protected void execute(List<String> args, Map<String, String> changeFromTo) throws Exception {
-        if(args.size() == 0) {
+        if (args.size() == 0) {
             throw new BuildException(Messages.ILLEGAL_AMOUNT_OF_ARGS);
         }
 
-        if(args.size() == 1) {
+        if (args.size() == 1) {
             String key = "%" + args.get(0) + "%";
             changeFromTo.remove(key);
             return;
@@ -51,7 +51,7 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
     protected void onLineParsed(LineParsedEvent event, Map<String, String> changeFromTo) {
         String content = event.getContent();
 
-        if(!content.contains("%")) return;
+        if (!content.contains("%")) return;
 
         StringBuilder editedContent = new StringBuilder();
 
@@ -59,33 +59,30 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
 
         boolean keyFound = false;
         StringBuilder keyBuilder = new StringBuilder();
-        for(char c : content.toCharArray()) {
-            if(!keyFound) {
-                if(c != '%') {
+        for (char c : content.toCharArray()) {
+            if (!keyFound) {
+                if (c != '%') {
                     editedContent.append(c);
-                }
-                else {
+                } else {
                     keyFound = true;
                 }
 
                 continue;
             }
 
-            if(c == ' ') {
+            if (c == ' ') {
                 keyFound = false;
                 keyBuilder.setLength(0);
-            }
-            else if(c != '%') {
+            } else if (c != '%') {
                 keyBuilder.append(c);
-            }
-            else {
+            } else {
                 keyFound = false;
 
                 String key = keyBuilder.toString();
                 keyBuilder.setLength(0);
 
                 String value = changeFromTo.get(key.toLowerCase());
-                if(value == null) {
+                if (value == null) {
                     warns.add(new Pair<>(key, lineNumber));
                     editedContent.append('%').append(key).append('%');
                     continue;
@@ -96,7 +93,7 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
             }
         }
 
-        if(keyBuilder.length() > 0) {
+        if (keyBuilder.length() > 0) {
             editedContent.append('%').append(keyBuilder);
         }
 
@@ -105,11 +102,11 @@ public class BuildSetExecutor implements BuildCommandExecutor, BuildListener {
 
     @EventHandler
     private void onFileParsed(FileParsedEvent event) {
-        if(event.getFileType() == FileParsedEvent.FileType.SOURCE) changeFromTo.clear();
+        if (event.getFileType() == FileParsedEvent.FileType.SOURCE) changeFromTo.clear();
 
-        for(Pair<String, Integer> warn : warns.parallelStream().sorted(Comparator.comparingInt(Pair::getRight))
+        for (Pair<String, Integer> warn : warns.parallelStream().sorted(Comparator.comparingInt(Pair::getRight))
                 .collect(Collectors.toList())) {
-            BuildSubcommand.addWarn("[file: " + event.getOutFile().getAbsolutePath() + " | line:" + warn.getRight() +"] " +
+            BuildSubcommand.addWarn("[file: " + event.getOutFile().getAbsolutePath() + " | line:" + warn.getRight() + "] " +
                     "Variable \"" + warn.getLeft() + "\" is unset!");
         }
 

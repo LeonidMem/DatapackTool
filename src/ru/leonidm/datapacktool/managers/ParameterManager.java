@@ -11,6 +11,7 @@ public class ParameterManager {
 
     /**
      * Register parameter
+     *
      * @param parameter
      */
     public static void registerParameter(BuildParameter parameter) {

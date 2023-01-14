@@ -21,15 +21,14 @@ public class IniConfig {
 
     public IniConfig(File file) throws Exception {
         this.path = file.getAbsolutePath();
-        if(!file.exists()) {
+        if (!file.exists()) {
             file.createNewFile();
-        }
-        else {
+        } else {
             String content = Files.readString(Paths.get(path));
 
-            for(String line : content.split("\n")) {
+            for (String line : content.split("\n")) {
                 String[] split = line.split("=", 2);
-                if(split.length != 2) continue;
+                if (split.length != 2) continue;
 
                 config.put(split[0].strip().toLowerCase(), split[1].strip());
             }
@@ -42,9 +41,9 @@ public class IniConfig {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String line;
-        while((line = reader.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
             String[] split = line.split("=", 2);
-            if(split.length != 2) continue;
+            if (split.length != 2) continue;
 
             config.put(split[0].strip().toLowerCase(), split[1].strip());
         }
@@ -55,7 +54,7 @@ public class IniConfig {
     }
 
     public void set(String key, String value) {
-        if(value == null) config.remove(key.toLowerCase());
+        if (value == null) config.remove(key.toLowerCase());
         else config.put(key.toLowerCase(), value);
     }
 
@@ -71,12 +70,12 @@ public class IniConfig {
         try {
             StringBuilder sb = new StringBuilder();
 
-            for(Map.Entry<String, String> entry : config.entrySet()) {
+            for (Map.Entry<String, String> entry : config.entrySet()) {
                 sb.append(entry.getKey()).append('=').append(entry.getValue()).append('\n');
             }
 
             Files.writeString(Paths.get(path), sb.toString());
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

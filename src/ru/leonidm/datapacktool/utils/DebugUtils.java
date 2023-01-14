@@ -7,7 +7,7 @@ public class DebugUtils {
         StackTraceElement currentElement = elements[3];
         System.out.println();
         System.out.println("Stacktrace for " + currentElement.getClassName() + "#" + currentElement.getMethodName() + ":");
-        for(int i = 4; i < Math.min(4 + depth, elements.length); i++) {
+        for (int i = 4; i < Math.min(4 + depth, elements.length); i++) {
             StackTraceElement element = elements[i];
             System.out.println(" > " + element.getClassName() + "#" + element.getMethodName() + ":" + element.getLineNumber());
         }

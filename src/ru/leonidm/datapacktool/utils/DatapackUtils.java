@@ -22,8 +22,8 @@ public class DatapackUtils {
     public static String getFunctionName(File file) {
         String namespace;
         File outDirectory = file;
-        while(true) {
-            if(outDirectory.getParentFile().getName().equalsIgnoreCase("data")) {
+        while (true) {
+            if (outDirectory.getParentFile().getName().equalsIgnoreCase("data")) {
                 namespace = outDirectory.getName();
                 break;
             }
@@ -34,11 +34,11 @@ public class DatapackUtils {
 
         String[] split = file.getParent().split(Pattern.quote(regex2), 2);
         String directory;
-        if(split.length != 2) directory = "";
+        if (split.length != 2) directory = "";
         else {
             directory = split[1].replace("\\", "/");
-            if(directory.startsWith("/")) directory = directory.substring(1);
-            if(!directory.equals("")) directory += "/";
+            if (directory.startsWith("/")) directory = directory.substring(1);
+            if (!directory.equals("")) directory += "/";
         }
 
         return namespace + ":" + directory + file.getName().substring(0, file.getName().length() - 11);
@@ -46,11 +46,11 @@ public class DatapackUtils {
 
     public static File getFunctionFromName(File inFile, String minecraftFormattedTag) {
         String[] splitTag = minecraftFormattedTag.split(":");
-        if(splitTag.length != 2)
+        if (splitTag.length != 2)
             throw new BuildException("Wrong formatted tag \"" + minecraftFormattedTag + "\"!");
 
         File directory = inFile;
-        while(!(directory = directory.getParentFile()).getName().equalsIgnoreCase("data"));
+        while (!(directory = directory.getParentFile()).getName().equalsIgnoreCase("data")) ;
 
         return new File(directory, splitTag[0] + Utils.fileSeparator + "functions" + Utils.fileSeparator
                 + splitTag[1].replace("/", Utils.fileSeparator) + ".mcfunction");
@@ -58,24 +58,25 @@ public class DatapackUtils {
 
     /**
      * Adds value to the Minecraft tag
-     * @param outFile Out file
+     *
+     * @param outFile               Out file
      * @param minecraftFormattedTag Minecraft formatted tag (f.e. "minecraft:load")
-     * @param category Minecraft category ("blocks", "functions" and other)
-     * @param value Value to add
+     * @param category              Minecraft category ("blocks", "functions" and other)
+     * @param value                 Value to add
      * @throws Exception
      */
     public static void addValueToTag(File outFile, String minecraftFormattedTag, String category, String value) throws Exception {
         String[] splitTag = minecraftFormattedTag.split(":");
-        if(splitTag.length != 2) throw new BuildException("Illegal tag \"" + minecraftFormattedTag + "\"!");
+        if (splitTag.length != 2) throw new BuildException("Illegal tag \"" + minecraftFormattedTag + "\"!");
 
         File directory = outFile;
-        while(!(directory = directory.getParentFile()).getName().equalsIgnoreCase("data"));
+        while (!(directory = directory.getParentFile()).getName().equalsIgnoreCase("data")) ;
 
         File tagFile = new File(directory, splitTag[0] + Utils.fileSeparator + "tags" + Utils.fileSeparator
                 + category + Utils.fileSeparator + splitTag[1].replace("/", Utils.fileSeparator) + ".json");
 
         tagFile.getParentFile().mkdirs();
-        if(tagFile.createNewFile()) {
+        if (tagFile.createNewFile()) {
             OutputStream outputStream = new FileOutputStream(tagFile);
             outputStream.write(("{\"values\":[\"" + value + "\"]}").getBytes(StandardCharsets.UTF_8));
             outputStream.close();
@@ -83,24 +84,23 @@ public class DatapackUtils {
         }
 
         Object rawJson = JSONValue.parse(new FileReader(tagFile));
-        if(!(rawJson instanceof JSONObject))
+        if (!(rawJson instanceof JSONObject))
             throw new BuildException("Tag \"" + minecraftFormattedTag + "\" is wrongly configured!");
 
         JSONObject jsonObject = (JSONObject) rawJson;
 
         Object rawValues = jsonObject.get("values");
         JSONArray values;
-        if(rawValues == null) {
+        if (rawValues == null) {
             values = new JSONArray();
-        }
-        else {
-            if(!(rawValues instanceof JSONArray))
+        } else {
+            if (!(rawValues instanceof JSONArray))
                 throw new BuildException("Tag \"" + minecraftFormattedTag + "\" is wrongly configured!");
 
             values = (JSONArray) rawValues;
         }
 
-        if(values.contains(value)) return;
+        if (values.contains(value)) return;
 
         values.add(value);
         jsonObject.put("values", values);
@@ -115,7 +115,8 @@ public class DatapackUtils {
 
     /**
      * Creates anonymous function in the datapack
-     * @param outFile Out file
+     *
+     * @param outFile                  Out file
      * @param anonymousFunctionContent Content of the anonymous function
      * @return Minecraft formatted name of the anonymous function
      * @throws IOException
